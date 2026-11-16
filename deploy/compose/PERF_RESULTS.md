@@ -1,8 +1,8 @@
 # 성능 측정 결과 (2026-11-08)
 
-조건: Lambda 1x H100 PCIe 80GB, vLLM 0.32.0, Qwen3.6-35B-A3B-FP8, `max_model_len 49152`, `max_num_seqs 8`, `gpu_memory_utilization 0.92`, prefix caching 켬. 앱은 `MSDS_PREPROCESS=legacy`(OCR·Docling 없는 전처리). 계획은 [PERF_PLAN.md](PERF_PLAN.md), 원본 데이터는 `perf-results/`.
+조건: Lambda 1x H100 PCIe 80GB, vLLM 0.32.0, Qwen3.6-35B-A3B-FP8, `max_model_len 49152`, `max_num_seqs 8`, `gpu_memory_utilization 0.92`, prefix caching 켬. 앱은 `MSDS_PREPROCESS=legacy`(OCR·Docling 없는 전처리). 원본 데이터는 `perf-results/`.
 
-> **이 결과는 OCR(글자추출)·Docling이 없는 구성의 기준선입니다.** 프로젝트의 최종 전처리(version17, PaddleOCR + Docling, GPU)는 아직 측정 전이고, 이 문서의 숫자를 "전체 파이프라인 성능"이라고 쓰면 안 됩니다. OCR 포함 측정은 같은 PDF 6건으로 따로 하고 이 기준선과 비교합니다.
+> **이 결과는 OCR(글자추출)·Docling이 없는 구성의 기준선입니다.** 프로젝트의 최종 전처리(version17, PaddleOCR + Docling, GPU)를 켠 측정은 7장에 따로 있고, 1~6장의 숫자를 "전체 파이프라인 성능"이라고 쓰면 안 됩니다. OCR 포함 측정은 같은 PDF 6건으로 따로 하고 이 기준선과 비교합니다.
 
 ## 1. 실제 서비스 부하 (vLLM 카운터, PDF 3건 + 판정)
 
@@ -157,6 +157,6 @@ vLLM 내부 상태(같은 시간대): 동시 8에서 대기 요청 평균 0.1(�
 - 모든 조건 **1회 측정**(반복 변동 약 ±10~20% 가능). 같은 PDF 6종을 반복해 넣었으므로 실제 문서 다양성보다 일정할 수 있다.
 - **LLM 설명 시간은 대부분 0.0초**였다(이전 실행에서 저장된 설명 재사용). 설명 단계의 부하는 측정하지 못했다.
 - `vllm_metrics.csv`는 09:38:57 이후(OCR 구성 실험 전체: A, B, C, 부하 시험) 실행/대기/KV 값이 모두 0이다. **원인은 수집 스크립트 버그**: `collect.sh`가 시작할 때 vLLM 컨테이너 IP를 한 번만 읽는데, OCR 구성으로 바꾸며 vLLM 컨테이너가 재생성되어 IP가 바뀌었고, 옛 주소 조회 실패가 `|| true`로 0으로 기록됐다. 이 구간의 vLLM 대기열·KV 수치는 복구할 수 없다(GPU 지표 `gpu.csv`는 정상). 재측정하려면 조회마다 IP를 다시 읽고 실패는 빈 값으로 남겨야 한다.
-- `extraction_jobs.csv`의 `worker_id`는 비어 있다. 팀 코드(`preprocess/jobs.py`의 `finish()`)가 작업이 끝나면 `worker_id=NULL`로 지우는 설계라 DB로는 워커별 처리 건수를 알 수 없다(122건 모두 succeeded). 대신 워커 컨테이너 로그(`server-final/ocr-worker-logs/`)의 "Processing document" 줄로 센 결과: 워커 1은 26건, 워커 2는 18건, 워커 3~6은 각 16건(합 108건. 나머지는 이전 컨테이너 교체로 로그가 사라짐). Docling 변환 평균 5.1~6.5초/건. 워커 1이 많은 것은 가장 먼저 떠서 오래 일했기 때문으로 보이나 확인하지 않았다.
+- `extraction_jobs.csv`의 `worker_id`는 비어 있다. 팀 코드(`preprocess/jobs.py`의 `finish()`)가 작업이 끝나면 `worker_id=NULL`로 지우는 설계라 DB로는 워커별 처리 건수를 알 수 없다(122건 모두 succeeded). 대신 워커 컨테이너 로그(저장소에는 올리지 않음)의 "Processing document" 줄로 센 결과: 워커 1은 26건, 워커 2는 18건, 워커 3~6은 각 16건(합 108건. 나머지는 이전 컨테이너 교체로 로그가 사라짐). Docling 변환 평균 5.1~6.5초/건. 워커 1이 많은 것은 가장 먼저 떠서 오래 일했기 때문으로 보이나 확인하지 않았다.
 - 추출 정확도(정답 대비)는 측정하지 않았다. 저장·검증되는 것은 형식 검증(스키마, 열 개수, 줄 번호 존재)뿐이다.
 - 모델 2개(GPU 2장) 구성, 추출 동시 처리(Y), E2·E3·E4는 측정하지 않았다.

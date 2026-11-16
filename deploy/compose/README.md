@@ -2,7 +2,7 @@
 
 Docker가 되는 NVIDIA GPU 서버 한 대에 모델(vLLM)·DB·앱·웹을 모두 올립니다. RunPod 시연 서버(`deploy/runpod/demo`)와 같은 구성을 컨테이너로 옮긴 것입니다.
 
-> **아직 실제 서버에서 띄워 본 적이 없습니다.** `docker compose config`로 문법만 확인했습니다. 처음 띄울 때 고칠 곳이 나올 수 있고, 특히 vLLM 이미지 태그(`.env`의 `VLLM_IMAGE`)는 서버에서 `docker pull`로 확인해야 합니다.
+> **2026-11-08에 실제 GPU 서버(Lambda 1x H100 PCIe 80GB)에서 빌드·기동해 PDF를 끝까지 돌려 확인했습니다.** vLLM 이미지는 `vllm/vllm-openai:v0.32.0`입니다. 기본 구성과 OCR 구성 모두 측정했고, 결과는 [PERF_RESULTS.md](PERF_RESULTS.md)에 있습니다.
 
 ```
 브라우저 ─▶ web(Apache :8080, Basic 인증) ─▶ app(:8020, 화면+추출+판정)
@@ -18,7 +18,7 @@ Docker가 되는 NVIDIA GPU 서버 한 대에 모델(vLLM)·DB·앱·웹을 모�
 | `app` | 화면(정적 빌드)과 추출·판정 API |
 | `web` | Apache. Basic 인증(아이디 `to21`)과 프록시. **바깥에 열리는 건 이것뿐(8080)** |
 
-**기본 구성(`compose.yaml`)에는 글자추출(OCR)을 넣지 않았습니다.** L40S 체험 서버(`deploy/runpod/demo`)처럼 `MSDS_PREPROCESS=legacy`(PDF 글자층과 쪽 이미지)로 돌립니다. 프로젝트의 최종 전처리(version17, PaddleOCR + Docling, GPU)와 글자추출 API·OCR 워커(DB 작업 대기열)는 `compose.ocr.yaml`을 겹쳐서 켭니다(`GPU_UTIL=0.72 docker compose -f compose.yaml -f compose.ocr.yaml up -d`). 이 OCR 구성은 처음 서버에서 빌드·기동 중이며 동작 확인 전입니다.
+**기본 구성(`compose.yaml`)에는 글자추출(OCR)을 넣지 않았습니다.** L40S 체험 서버(`deploy/runpod/demo`)처럼 `MSDS_PREPROCESS=legacy`(PDF 글자층과 쪽 이미지)로 돌립니다. 프로젝트의 최종 전처리(version17, PaddleOCR + Docling, GPU)와 글자추출 API·OCR 워커(DB 작업 대기열)는 `compose.ocr.yaml`을 겹쳐서 켭니다(`GPU_UTIL=0.72 docker compose -f compose.yaml -f compose.ocr.yaml up -d`). OCR 구성도 같은 서버에서 띄워 Docling이 GPU를 쓰는 것을 확인했고, PDF 48건을 한꺼번에 넣어도 추출 실패가 없었습니다([PERF_RESULTS.md](PERF_RESULTS.md) 7장).
 
 ## 필요한 것
 
