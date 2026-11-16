@@ -57,7 +57,7 @@ class DocumentStore:
 
     # ── 쓰기 ──
     def create(self, pdf: bytes, filename: str, as_of: str | None, model_tag: str,
-               today: str | None = None) -> dict:
+               today: str | None = None, *, created_by: str | None = None) -> dict:
         """원본을 저장하고 대기(queued) 상태를 만든다. 같은 PDF가 이미 있으면 duplicate_of에 그 번호를 적는다."""
         sha = hashlib.sha256(pdf).hexdigest()
         now = now_kst()
@@ -65,7 +65,7 @@ class DocumentStore:
         with self._lock:
             doc_id = self._next_id(today)
             dup = sorted(s["id"] for s in self._states.values() if s["sha256"] == sha)
-            state = progress.new_state(doc_id, filename, sha, len(pdf), as_of, model_tag, now, dup)
+            state = progress.new_state(doc_id, filename, sha, len(pdf), as_of, model_tag, now, dup, created_by)
             folder = self.root / doc_id
             folder.mkdir(parents=True)
             self.pdf_path(doc_id).write_bytes(pdf)

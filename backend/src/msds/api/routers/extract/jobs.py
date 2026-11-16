@@ -90,10 +90,13 @@ async def upload(
     if not body.startswith(b"%PDF-"):
         raise HTTPException(400, "PDF 파일이 아닙니다")
     store = request.app.state.store
+    # 올린 사람(로그인 아이디)은 진행 상태에 남긴다. 목록·상세 응답의 created_by
+    user = getattr(request.state, "user", None)
+    extra = {"created_by": user.username} if user else {}
     if hasattr(store, "dsn"):
-        state = store.create(body, name, as_of, pipeline.model_tag(), reuse=reuse)
+        state = store.create(body, name, as_of, pipeline.model_tag(), reuse=reuse, **extra)
     else:
-        state = store.create(body, name, as_of, pipeline.model_tag())
+        state = store.create(body, name, as_of, pipeline.model_tag(), **extra)
     request.app.state.worker.submit(state["id"])
     return {**progress.view(state), **queue_fields(request, state)}
 

@@ -186,7 +186,7 @@ class PostgresJobStore:
             return record
 
     def create(self, pdf: bytes, filename: str, as_of: str | None, model_tag: str,
-               today: str | None = None, *, reuse: bool = True) -> dict:
+               today: str | None = None, *, reuse: bool = True, created_by: str | None = None) -> dict:
         # Serialize ID allocation with every API process using this database.
         # Never create state.json: file-mode workers must not pick up DB jobs.
         now = now_kst()
@@ -215,7 +215,7 @@ class PostgresJobStore:
             duplicate_rows = db.execute(sql.SQL('SELECT job_id FROM {} WHERE file_sha256=%s ORDER BY job_id')
                                         .format(self.table), (digest,)).fetchall()
             state = progress.new_state(doc_id, filename, digest, len(pdf), as_of, model_tag, now,
-                                       [row['job_id'] for row in duplicate_rows])
+                                       [row['job_id'] for row in duplicate_rows], created_by)
             state['reuse_requested'] = reuse
             # On an uncertain insert/commit outcome, preserve the original PDF.
             # Future allocations skip the orphan's directory and never overwrite it.
