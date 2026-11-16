@@ -24,6 +24,8 @@ dependencies = [
   "python-multipart==0.0.20", # 추출 API의 PDF 업로드(Form/File) 해석 (api/extraction_app)
   "psycopg[binary]==3.3.6",  # 지식DB(PostgreSQL) 접속 (compliance/htodb)
   "psycopg-pool==3.3.3",     # 조회 API 연결 풀
+  "PyJWT==2.15.1",           # 로그인 토큰 발급·검증 (auth/security). HS256만 써서 cryptography 는 필요 없다
+  "argon2-cffi==25.1.0",     # 비밀번호 해시 (auth/security)
 ]
 
 [dependency-groups]
@@ -49,6 +51,8 @@ package = false              # 설치하는 패키지가 아니다. src/ 는 pyt
 default-groups = ["dev"]
 # 잠금 대상: 개발용 macOS, 서버·폐쇄망 Linux
 environments = ["sys_platform == 'darwin'", "sys_platform == 'linux'"]
+# argon2-cffi 의 하위 패키지. 26.2.0 은 2026-11-13 에 나와 아직 검증 기간이 짧다 (2026-11-16 확인)
+constraint-dependencies = ["argon2-cffi-bindings<26.2"]
 
 [tool.uv.sources]
 paddlepaddle-gpu = { index = "paddle-cu129" }
