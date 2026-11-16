@@ -1,0 +1,49 @@
+{
+ "label": "ocr_one",
+ "start": "2026/11/08 09:42:31",
+ "docs": 1,
+ "done": 1,
+ "makespan_s": 43.1,
+ "per_doc_s": [
+  42.9
+ ],
+ "median_doc_s": 42.9,
+ "reused": [],
+ "detail": [
+  {
+   "file": "S024.pdf",
+   "events": [
+    {
+     "t": 0.22,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 2.24,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 12.41,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 32.8,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 43.06,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-022",
+   "uploaded_s": 0.15,
+   "status": "done",
+   "finished_s": 43.06,
+   "reused_from": null
+  }
+ ]
+}

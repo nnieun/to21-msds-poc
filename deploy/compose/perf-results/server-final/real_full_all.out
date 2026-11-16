@@ -1,0 +1,40 @@
+PDF 6건: S002.pdf S015.pdf S018.pdf S024.pdf S033.pdf S034.pdf 
+== vLLM 재시작(prefix 캐시 비우기) 09:55:07
+ Container to21-msds-vllm-1 Restarting 
+ Container to21-msds-vllm-1 Started 
+ Container to21-msds-vllm-1 Running 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-vllm-1 Healthy 
+== 문서 동시 수 3 로 app 재시작 09:56:38
+ Container to21-msds-vllm-1 Running 
+ Container to21-msds-extract-api-1 Running 
+ Container to21-msds-db-1 Running 
+ Container to21-msds-app-1 Recreate 
+ Container to21-msds-app-1 Recreated 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-migrate-1 Starting 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-migrate-1 Started 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-migrate-1 Waiting 
+ Container to21-msds-extract-api-1 Waiting 
+ Container to21-msds-extract-api-1 Healthy 
+ Container to21-msds-vllm-1 Healthy 
+ Container to21-msds-migrate-1 Exited 
+ Container to21-msds-app-1 Starting 
+ Container to21-msds-app-1 Started 
+ Container to21-msds-migrate-1 Waiting 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-app-1 Waiting 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-extract-api-1 Waiting 
+ Container to21-msds-extract-api-1 Healthy 
+ Container to21-msds-vllm-1 Healthy 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-migrate-1 Exited 
+ Container to21-msds-app-1 Healthy 
+[full_w3] 시작 2026/11/08 09:56:59 | 문서 6/6 완료 | 전체 146.7s | 문서별 [57.4, 80.2, 84.2, 117.5, 123.7, 139.6] | 중앙값 117.5s
+  전체 흐름(판정+설명 포함): 5/6건 | 업로드→설명 완료 [146.3, 103.4, 66.4, 105.0, 122.0] | 판정 로직 [4.7, 4.8, 4.9, 2.5, 2.5] | LLM 설명 [2.0, 18.3, 4.1, 18.3, 2.0] | 오류 ['HTTPError: HTTP Error 409: Conflict']
+끝 09:59:25

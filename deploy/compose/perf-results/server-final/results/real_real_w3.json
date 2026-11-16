@@ -1,0 +1,244 @@
+{
+ "label": "real_w3",
+ "start": "2026/11/08 08:55:01",
+ "docs": 6,
+ "done": 6,
+ "makespan_s": 111.3,
+ "per_doc_s": [
+  44.6,
+  58.7,
+  73.0,
+  82.0,
+  98.3,
+  110.6
+ ],
+ "median_doc_s": 82.0,
+ "reused": [],
+ "detail": [
+  {
+   "file": "S002.pdf",
+   "events": [
+    {
+     "t": 0.84,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 9.46,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 20.33,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 63.26,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 73.55,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-007",
+   "uploaded_s": 0.56,
+   "status": "done",
+   "finished_s": 73.55,
+   "reused_from": null
+  },
+  {
+   "file": "S015.pdf",
+   "events": [
+    {
+     "t": 0.79,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 9.22,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 40.78,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 44.94,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-004",
+   "uploaded_s": 0.3,
+   "status": "done",
+   "finished_s": 44.94,
+   "reused_from": null
+  },
+  {
+   "file": "S018.pdf",
+   "events": [
+    {
+     "t": 0.84,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 24.5,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 32.69,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 72.26,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 96.74,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 111.28,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-009",
+   "uploaded_s": 0.65,
+   "status": "done",
+   "finished_s": 111.28,
+   "reused_from": null
+  },
+  {
+   "file": "S024.pdf",
+   "events": [
+    {
+     "t": 0.8,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 2.85,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 9.01,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 11.36,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 54.67,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 59.16,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-005",
+   "uploaded_s": 0.42,
+   "status": "done",
+   "finished_s": 59.16,
+   "reused_from": null
+  },
+  {
+   "file": "S033.pdf",
+   "events": [
+    {
+     "t": 0.84,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 9.45,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 24.48,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 45.48,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 57.73,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 82.5,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-006",
+   "uploaded_s": 0.48,
+   "status": "done",
+   "finished_s": 82.5,
+   "reused_from": null
+  },
+  {
+   "file": "S034.pdf",
+   "events": [
+    {
+     "t": 0.85,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 18.27,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 30.81,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 59.92,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 96.77,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 98.89,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-008",
+   "uploaded_s": 0.6,
+   "status": "done",
+   "finished_s": 98.89,
+   "reused_from": null
+  }
+ ]
+}
