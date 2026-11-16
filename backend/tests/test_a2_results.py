@@ -14,6 +14,7 @@ from psycopg import sql
 import pytest
 from fastapi.testclient import TestClient
 
+from auth_user import sign_in
 from msds.service.jobs import LeaseLost, PostgresJobStore, ReviewNotReady
 from msds.service.results import ResultConflict, ResultNotReady, ResultStore, canonical_sha256
 from msds.service import review
@@ -408,7 +409,7 @@ def test_completed_result_api_persists_existing_output_and_reports_errors(stores
     out.write_text(json.dumps(doc), encoding='utf-8')
     checks.write_text(json.dumps(review_checks, ensure_ascii=False), encoding='utf-8')
     monkeypatch.setattr(storage_router, 'validate_document', lambda doc, checks: (dict(checks), {}))
-    app = extract_app.create_app(store=jobs, static_dir=None)
+    app = sign_in(extract_app.create_app(store=jobs, static_dir=None))
     app.state.store = jobs
     client = TestClient(app)
     try:

@@ -5,6 +5,7 @@ import threading
 import pytest
 from fastapi.testclient import TestClient
 
+from auth_user import sign_in
 from msds.api import extract_app
 from msds.api.routers.extract import jobs as jobs_router
 from msds.api.routers.extract import regenerated as regen_router
@@ -35,7 +36,7 @@ class FakeWorker:
 def ctx(tmp_path):
     store = DocumentStore(tmp_path / "service")
     worker = FakeWorker()
-    app = extract_app.create_app(store=store, worker=worker, pages_dir=tmp_path / "pages")
+    app = sign_in(extract_app.create_app(store=store, worker=worker, pages_dir=tmp_path / "pages"))
     with TestClient(app) as client:
         yield client, store, worker, tmp_path
 
@@ -388,7 +389,7 @@ def test_real_worker_runs_pipeline_in_background(tmp_path):
         st.apply(doc_id, {"type": "done", "summary": {}})
         done.set()
 
-    app = extract_app.create_app(store=store, worker=Worker(store, process), pages_dir=tmp_path / "pages")
+    app = sign_in(extract_app.create_app(store=store, worker=Worker(store, process), pages_dir=tmp_path / "pages"))
     with TestClient(app) as client:
         doc = upload(client).json()["id"]
         assert done.wait(5)
@@ -411,10 +412,12 @@ def test_judge_app_alone_exposes_download_headers():
     assert "content-disposition" in r.headers.get("access-control-expose-headers", "").lower()
 
 
-def test_to_judgment_needs_reviewer(ctx):
+def test_to_judgment_takes_reviewer_from_login(ctx):
+    # 누가 넘겼는지는 로그인으로 안다. 본문이 없어도 되고(파일 저장소라 409), 예전 화면이 보낸 빈 이름은 여전히 거절한다
     client, *_ = ctx
     doc_id = upload(client).json()["id"]
-    assert client.post(f"/api/documents/{doc_id}/to-judgment", json={}).status_code == 422
+    assert client.post(f"/api/documents/{doc_id}/to-judgment").status_code == 409
+    assert client.post(f"/api/documents/{doc_id}/to-judgment", json={}).status_code == 409
     assert client.post(f"/api/documents/{doc_id}/to-judgment", json={"reviewer": "  "}).status_code == 422
 
 

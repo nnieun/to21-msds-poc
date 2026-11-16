@@ -3,6 +3,7 @@ import json
 
 from fastapi.testclient import TestClient
 
+from auth_user import sign_in
 from msds.api.extract_app import create_app
 from msds.api import judge_app
 from msds.service.store import DocumentStore
@@ -30,7 +31,7 @@ def test_embedded_judge_router_follows_extract_app_lifespan(tmp_path, monkeypatc
     monkeypatch.setenv('MSDS_JUDGE_IN_EXTRACT_APP', '1')
     monkeypatch.setattr(judge_app, 'attach', lambda app: (calls.append('attach'), setattr(app.state, 'judge_workers', object())))
     monkeypatch.setattr(judge_app, 'detach', lambda app: calls.append('detach'))
-    app = create_app(store=DocumentStore(tmp_path), worker=Worker(), static_dir=None)
+    app = sign_in(create_app(store=DocumentStore(tmp_path), worker=Worker(), static_dir=None))
     with TestClient(app) as client:
         response = client.get('/api/judgments/summary')
         assert response.status_code == 422  # router is mounted; required job_ids is absent
@@ -40,7 +41,7 @@ def test_embedded_judge_router_follows_extract_app_lifespan(tmp_path, monkeypatc
 
 def test_queue_fields_are_exposed_in_upload_list_and_detail(tmp_path):
     store = QueuedStore(tmp_path)
-    with TestClient(create_app(store=store, worker=Worker(), static_dir=None)) as client:
+    with TestClient(sign_in(create_app(store=store, worker=Worker(), static_dir=None))) as client:
         response = client.post("/api/documents?filename=x.pdf", content=b"%PDF-1.7\n")
         assert response.status_code == 202
         item = response.json()
@@ -60,7 +61,7 @@ def test_result_and_page_endpoints_follow_published_attempt(tmp_path):
                     "runs_dir": tmp_path / "attempt" / "runs"}
 
     store = ArtifactStore(tmp_path / "store")
-    with TestClient(create_app(store=store, worker=Worker(), static_dir=None)) as client:
+    with TestClient(sign_in(create_app(store=store, worker=Worker(), static_dir=None))) as client:
         item = client.post("/api/documents?filename=x.pdf", content=b"%PDF-1.7\n").json()
         doc_id = item["id"]
         dirs = store.artifact_paths(doc_id)
