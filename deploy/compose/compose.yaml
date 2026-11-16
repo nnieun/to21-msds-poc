@@ -1,0 +1,152 @@
+# TO21 MSDS 한 대 배포: Docker가 되는 GPU 서버(Lambda 등) 1대에 vLLM·DB·앱·웹을 모두 올린다.
+# 구성은 RunPod 시연 서버(deploy/runpod/demo)와 같다. 사용법: README.md
+#
+#   브라우저 ─▶ web(Apache :8080, Basic 인증) ─▶ app(:8020, 화면+추출+판정)
+#                                                  ├▶ vllm(:8000, 밖으로 열지 않음)
+#                                                  └▶ db(PostgreSQL, 밖으로 열지 않음)
+#
+# 바깥에 열리는 포트는 web 하나뿐이다. 값은 같은 폴더의 .env(git 제외)에서 읽는다. 견본: .env.example
+name: to21-msds
+
+services:
+  db:
+    image: postgres:16.15@sha256:ca0bd484cb98bf4b24eb1010e73fb3fcbd6714d240fbc1a10eea5b7dbecb641d   # deploy/htodb/compose.yaml과 같은 이미지
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kdb
+      POSTGRES_PASSWORD: ${HTODB_PG_PASSWORD:?.env가 없습니다. ./gen-env.sh 를 먼저 실행하세요}
+      POSTGRES_DB: postgres            # 지식DB(kdb)는 아래 복원 스크립트가 만든다
+      HTODB_READER_PASSWORD: ${HTODB_READER_PASSWORD:?}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/10-restore.sh:/docker-entrypoint-initdb.d/10-restore.sh:ro   # 볼륨이 비어 있는 첫 기동에서만 돈다
+      - ./data:/dump:ro                                                   # kdb.dump, globals.sql
+    healthcheck:
+      # 첫 기동의 임시 서버는 TCP를 열지 않는다. -h 로 TCP를 확인해야 복원이 끝난 뒤에야 healthy가 된다
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U kdb -d kdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 30s
+
+  vllm:
+    image: ${VLLM_IMAGE:-vllm/vllm-openai:v0.32.0}
+    restart: unless-stopped
+    ipc: host
+    environment:
+      HF_HOME: /root/.cache/huggingface
+      VLLM_API_KEY: ${VLLM_API_KEY:?}
+      VLLM_USE_DEEP_GEMM: "0"            # deploy/runpod/serve_vllm.sh와 같은 값
+      VLLM_USE_FLASHINFER_SAMPLER: "0"   # PyTorch 샘플러. temperature 0에서는 고르는 토큰이 같다
+    volumes:
+      - hf_cache:/root/.cache/huggingface
+    # 옵션은 deploy/runpod/serve_vllm.sh와 같다. 값은 .env에서 바꾼다(80GB GPU는 기본값으로 넉넉하다)
+    command:
+      - ${MODEL:-Qwen/Qwen3.6-35B-A3B-FP8}
+      - --trust-remote-code
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --api-key
+      - ${VLLM_API_KEY:?}
+      - --max-model-len
+      - ${MAX_MODEL_LEN:-49152}
+      - --max-num-seqs
+      - ${MAX_NUM_SEQS:-8}
+      - --gpu-memory-utilization
+      - ${GPU_UTIL:-0.92}
+      - --limit-mm-per-prompt
+      - '{"image": 2}'
+      - --structured-outputs-config
+      - '{"backend": "xgrammar", "disable_any_whitespace": true}'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)\""]
+      interval: 15s
+      timeout: 5s
+      retries: 120
+      start_period: 120s                 # 모델 내려받기와 올리기는 첫 기동에 10~30분 걸린다
+
+  migrate:
+    # 서비스 DB(msds_service)와 표를 만든다. 몇 번 돌려도 된다. 끝나면 종료한다.
+    build: &app-build
+      context: ../..
+      dockerfile: deploy/compose/Dockerfile
+    image: to21-msds-app
+    restart: "no"
+    command: ["bash", "/app/deploy/compose/app/migrate.sh"]
+    environment: &db-env
+      HTODB_PG_HOST: db
+      HTODB_PG_PORT: "5432"
+      HTODB_PG_PASSWORD: ${HTODB_PG_PASSWORD}
+      HTODB_READER_PASSWORD: ${HTODB_READER_PASSWORD}
+      JUDGE_PG_PASSWORD: ${JUDGE_PG_PASSWORD:?}
+      PGPASSWORD: ${HTODB_PG_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    image: to21-msds-app
+    build: *app-build
+    restart: unless-stopped
+    command: ["bash", "/app/deploy/compose/app/entrypoint.sh"]
+    environment:
+      <<: *db-env
+      MSDS_SERVICE_DATABASE_URL: host=db port=5432 dbname=msds_service user=kdb
+      MSDS_JUDGE_IN_EXTRACT_APP: "1"
+      JUDGE_PG_DATABASE: msds_service
+      RUNPOD_VLLM_BASE_URL: http://vllm:8000/v1
+      RUNPOD_VLLM_API_KEY: ${VLLM_API_KEY}
+      MSDS_SERVICE_MODEL: ${MSDS_SERVICE_MODEL:-qwen36_35b_runpod_48g}
+      MSDS_PREPROCESS: legacy            # OCR 없이. 시연 서버와 같다(deploy/runpod/demo/README.md)
+      MSDS_PREPROCESS_WORKERS: ${PREPROCESS_WORKERS:-2}   # 앱이 동시에 전처리(OCR 큐에 넣고 기다림)하는 문서 수. 코드 기본값은 1
+      MSDS_EXTRACT_WORKERS: ${EXTRACT_WORKERS:-1}   # 동시에 추출하는 PDF 수. ADR-0006: 일관성 실험 전에는 1(성능 측정 때만 바꿔 본다)
+      MSDS_EXPLAIN_WORKERS: ${EXPLAIN_WORKERS:-2}   # 동시에 만드는 LLM 설명 수. 코드 기본값 2. 설계("판정 쪽 모델도 1개씩")는 1
+      MSDS_MODEL_MAX_INFLIGHT: ${MAX_NUM_SEQS:-8}   # vLLM 동시 수와 같게 맞춘다
+      MSDS_API_PORT: "8020"
+    volumes:
+      - app_data:/app/data/service       # 올린 PDF, 진행 상태, 결과
+      - ../../to21/v0.6:/app/to21/v0.6:ro   # TO21 자료는 이미지에 넣지 않고 마운트한다(D-47)
+      - ../../.git:/app/.git:ro             # 결과에 기록할 코드 버전(git HEAD). 없으면 판정 넘기기가 409로 거절된다
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      vllm:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8020/api/health', timeout=3)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  web:
+    image: httpd:2.4
+    restart: unless-stopped
+    environment:
+      WEB_PASSWORD: ${WEB_PASSWORD:?}
+    # 비밀번호 파일은 켤 때마다 .env 값으로 만든다(아이디 to21)
+    command:
+      - sh
+      - -c
+      - htpasswd -cbB /usr/local/apache2/conf/to21.htpasswd to21 "$$WEB_PASSWORD" >/dev/null && exec httpd-foreground
+    volumes:
+      - ./web/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  hf_cache:
+  app_data:
