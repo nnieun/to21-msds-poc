@@ -143,6 +143,19 @@ class JobStore:
             return cur.rowcount == 1
 
 
+def warn_if_degraded(job_id: str, meta) -> bool:
+    """보조 표 분석(Docling)이 시도됐는데 끝나지 못했으면 워커 로그에 경고를 남긴다.
+
+    결과는 PyMuPDF 표로 쓸 수 있어 작업은 성공으로 둔다. 다만 이 사실이 meta.json 안에만 있으면
+    아무도 보지 못한다(2026-11-08 배포에서 torch import 실패로 Docling이 빠진 채 성공으로 끝났다).
+    """
+    if not isinstance(meta, dict) or not meta.get('docling_attempted') or meta.get('docling_completed'):
+        return False
+    LOG.warning('Docling table analysis did not run for job %s; native geometry retained: %s',
+                job_id, meta.get('docling_error') or 'unknown error')
+    return True
+
+
 def run_one(store: JobStore, extractor: Callable | None = None, *, ocr_device: str = 'gpu:0',
             use_docling: bool = True, lease_seconds: float = 120) -> bool:
     """Claim and process one queued job. Return False if no job was waiting."""
@@ -175,8 +188,9 @@ def run_one(store: JobStore, extractor: Callable | None = None, *, ocr_device: s
                 raise RuntimeError('Job lease lost while extracting')
 
         output = Path(job['output_path'])
-        extractor(Path(job['source_path']), output, doc_id=job['doc_id'], ocr_device=ocr_device,
-                  use_docling=use_docling, on_progress=on_progress)
+        meta = extractor(Path(job['source_path']), output, doc_id=job['doc_id'], ocr_device=ocr_device,
+                         use_docling=use_docling, on_progress=on_progress)
+        warn_if_degraded(job['job_id'], meta)
         if not output.is_dir():
             raise RuntimeError('Extraction returned without publishing the output directory')
         if not store.finish(job['job_id'], worker_id, result_dir=str(output)):
