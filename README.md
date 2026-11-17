@@ -445,7 +445,7 @@ make test                 # 백엔드와 프론트엔드 시험
 | 시연 서버 (온프레미스 배포) | [https://lvmekacquif8wh-8080.proxy.runpod.net/](https://lvmekacquif8wh-8080.proxy.runpod.net/). RunPod Pod 한 대에 Apache, 앱, DB, vLLM을 모두 올려 회사 GPU 서버 한 대를 대신합니다. 앱에서 모델까지 호출이 Pod 안에서 끝나고 외부 API는 쓰지 않습니다 |
 | 폐쇄망 | `uv export --no-dev`로 만든 Python 패키지 묶음과 화면 빌드 결과만 반입합니다. 폐쇄망에서 npm을 설치하지 않습니다 |
 
-compose는 `docker compose config`로 문법만 확인했고 이미지를 실제로 빌드해 띄워 본 적은 없습니다.
+compose는 2026-11-08에 GPU 서버(H100 80GB) 한 대에서 실제로 빌드·기동해 PDF 추출과 판정까지 확인했습니다. 측정 결과는 [deploy/compose/PERF_RESULTS.md](deploy/compose/PERF_RESULTS.md)에 있습니다.
 
 ## 🚧 한계와 앞으로
 
@@ -458,7 +458,6 @@ compose는 `docker compose config`로 문법만 확인했고 이미지를 실제
 - 8항 노출기준과 12항 생태는 학습 후 오히려 내려갔습니다. 교사 데이터의 작성 방식을 골드 규칙에 맞추는 일이 남아 있습니다.
 - 최종 모델(`ft_q38`)은 bf16 원본이 약 54GB라 최소 사양(GPU 48GB)과 시연 GPU에는 올라가지 않습니다. FP8 원본에 LoRA를 붙인 점수는 재지 않았습니다.
 - 학습된 LoRA 어댑터(158MB)가 저장소에 없고 팀 공유 위치도 정해지지 않았습니다.
-- compose 배포는 실제로 띄워 본 적이 없습니다.
 - TO21 제공 자료(스키마, 명세서, 정답 예제)를 저장소에 보관해도 되는지 TO21에 확인 중입니다.
 
 앞으로 다룰 방향은 팀에서 정한 뒤 이 자리에 적습니다. *(발표자료의 "발전 방향" 항목이 아직 비어 있습니다.)*

@@ -1,0 +1,3 @@
+# 지식DB 덤프는 TO21 자료다. 저장소에 올리지 않는다 (D-47). 폴더 자리만 .gitkeep 으로 남긴다.
+data/*
+!data/.gitkeep

@@ -1,0 +1,1411 @@
+{
+ "label": "loadX24_w1",
+ "start": "2026/11/08 10:52:29",
+ "docs": 24,
+ "done": 24,
+ "makespan_s": 828.3,
+ "per_doc_s": [
+  59.9,
+  92.3,
+  131.4,
+  157.4,
+  188.4,
+  213.8,
+  336.6,
+  376.1,
+  407.6,
+  442.4,
+  460.6,
+  500.2,
+  522.5,
+  546.8,
+  569.7,
+  614.6,
+  641.1,
+  673.5,
+  703.0,
+  718.2,
+  740.0,
+  780.5,
+  800.9,
+  825.8
+ ],
+ "p95_doc_s": 800.9,
+ "median_doc_s": 522.5,
+ "reused": [],
+ "detail": [
+  {
+   "file": "S002__00.pdf",
+   "events": [
+    {
+     "t": 2.5,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 24.11,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 131.26,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 151.86,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 158.41,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-074",
+   "uploaded_s": 1.01,
+   "status": "done",
+   "finished_s": 158.41,
+   "reused_from": null,
+   "handoff_s": 158.41,
+   "judge_error": "HTTPError: HTTP Error 409: Conflict"
+  },
+  {
+   "file": "S015__01.pdf",
+   "events": [
+    {
+     "t": 2.46,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 27.27,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 189.08,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 203.97,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 214.97,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 214.97,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 219.74,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 219.74,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-077",
+   "uploaded_s": 1.22,
+   "status": "done",
+   "finished_s": 214.97,
+   "reused_from": null,
+   "handoff_s": 214.97,
+   "judged_s": 219.74,
+   "explained_s": 219.74,
+   "explanations": {
+    "done": 2,
+    "total": 2
+   }
+  },
+  {
+   "file": "S018__02.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 63.26,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 408.76,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 439.5,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 443.8,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 443.8,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 449.24,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 449.24,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-081",
+   "uploaded_s": 1.42,
+   "status": "done",
+   "finished_s": 443.8,
+   "reused_from": null,
+   "handoff_s": 443.8,
+   "judged_s": 449.24,
+   "explained_s": 449.24,
+   "explanations": {
+    "done": 6,
+    "total": 6
+   }
+  },
+  {
+   "file": "S024__03.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 28.2,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 93.03,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 113.76,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 132.36,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 132.36,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 136.78,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 136.78,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-073",
+   "uploaded_s": 0.97,
+   "status": "done",
+   "finished_s": 132.36,
+   "reused_from": null,
+   "handoff_s": 132.36,
+   "judged_s": 136.78,
+   "explained_s": 136.78,
+   "explanations": {
+    "done": 4,
+    "total": 4
+   }
+  },
+  {
+   "file": "S033__04.pdf",
+   "events": [
+    {
+     "t": 2.51,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 89.22,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 523.5,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 533.85,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 548.4,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 548.4,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 551.6,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 559.9,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-085",
+   "uploaded_s": 1.61,
+   "status": "done",
+   "finished_s": 548.4,
+   "reused_from": null,
+   "handoff_s": 548.4,
+   "judged_s": 551.6,
+   "explained_s": 559.9,
+   "explanations": {
+    "done": 3,
+    "total": 3
+   }
+  },
+  {
+   "file": "S034__05.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 101.15,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 643.7,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 672.58,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 675.31,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 675.31,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 680.68,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 680.68,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-089",
+   "uploaded_s": 1.83,
+   "status": "done",
+   "finished_s": 675.31,
+   "reused_from": null,
+   "handoff_s": 675.31,
+   "judged_s": 680.68,
+   "explained_s": 680.68,
+   "explanations": {
+    "done": 2,
+    "total": 2
+   }
+  },
+  {
+   "file": "S002__06.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 52.03,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 337.86,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 370.97,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 377.39,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-079",
+   "uploaded_s": 1.32,
+   "status": "done",
+   "finished_s": 377.39,
+   "reused_from": null,
+   "handoff_s": 377.39,
+   "judge_error": "HTTPError: HTTP Error 409: Conflict"
+  },
+  {
+   "file": "S015__07.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 91.39,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 548.37,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 560.88,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 571.35,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 571.35,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 576.93,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 576.93,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-086",
+   "uploaded_s": 1.66,
+   "status": "done",
+   "finished_s": 571.35,
+   "reused_from": null,
+   "handoff_s": 571.35,
+   "judged_s": 576.93,
+   "explained_s": 576.93,
+   "explanations": {
+    "done": 2,
+    "total": 2
+   }
+  },
+  {
+   "file": "S018__08.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 67.39,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 462.78,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 491.45,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 501.75,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 501.75,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 508.5,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 508.5,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-083",
+   "uploaded_s": 1.52,
+   "status": "done",
+   "finished_s": 501.75,
+   "reused_from": null,
+   "handoff_s": 501.75,
+   "judged_s": 508.5,
+   "explained_s": 508.5,
+   "explanations": {
+    "done": 6,
+    "total": 6
+   }
+  },
+  {
+   "file": "S024__09.pdf",
+   "events": [
+    {
+     "t": 2.47,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 31.4,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 158.26,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 176.95,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 189.51,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 189.51,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 195.99,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 195.99,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-076",
+   "uploaded_s": 1.15,
+   "status": "done",
+   "finished_s": 189.51,
+   "reused_from": null,
+   "handoff_s": 189.51,
+   "judged_s": 195.99,
+   "explained_s": 195.99,
+   "explanations": {
+    "done": 4,
+    "total": 4
+   }
+  },
+  {
+   "file": "S033__10.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 87.62,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 503.5,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 513.8,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 524.1,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 524.1,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 526.91,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 526.91,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-084",
+   "uploaded_s": 1.56,
+   "status": "done",
+   "finished_s": 524.1,
+   "reused_from": null,
+   "handoff_s": 524.1,
+   "judged_s": 526.91,
+   "explained_s": 526.91,
+   "explanations": {
+    "done": 3,
+    "total": 3
+   }
+  },
+  {
+   "file": "S034__11.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 60.4,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 378.07,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 396.56,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 409.0,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 409.0,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 413.95,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 413.95,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-080",
+   "uploaded_s": 1.38,
+   "status": "done",
+   "finished_s": 409.0,
+   "reused_from": null,
+   "handoff_s": 409.0,
+   "judged_s": 413.95,
+   "explained_s": 413.95,
+   "explanations": {
+    "done": 1,
+    "total": 1
+   }
+  },
+  {
+   "file": "S002__12.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 97.63,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 675.92,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 696.57,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 704.89,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-090",
+   "uploaded_s": 1.91,
+   "status": "done",
+   "finished_s": 704.89,
+   "reused_from": null,
+   "handoff_s": 704.89,
+   "judge_error": "HTTPError: HTTP Error 409: Conflict"
+  },
+  {
+   "file": "S015__13.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 48.91,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 214.68,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 323.35,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 337.84,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 337.84,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 343.68,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 343.68,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-078",
+   "uploaded_s": 1.27,
+   "status": "done",
+   "finished_s": 337.84,
+   "reused_from": null,
+   "handoff_s": 337.84,
+   "judged_s": 343.68,
+   "explained_s": 343.68,
+   "explanations": {
+    "done": 2,
+    "total": 2
+   }
+  },
+  {
+   "file": "S018__14.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 130.68,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 741.44,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 770.37,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 782.8,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 782.8,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 787.88,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 789.92,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-093",
+   "uploaded_s": 2.32,
+   "status": "done",
+   "finished_s": 782.8,
+   "reused_from": null,
+   "handoff_s": 782.8,
+   "judged_s": 787.88,
+   "explained_s": 789.92,
+   "explanations": {
+    "done": 6,
+    "total": 6
+   }
+  },
+  {
+   "file": "S024__15.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 22.23,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 48.76,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 60.97,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 60.97,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 68.08,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 68.08,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-075",
+   "uploaded_s": 1.08,
+   "status": "done",
+   "finished_s": 60.97,
+   "reused_from": null,
+   "handoff_s": 60.97,
+   "judged_s": 68.08,
+   "explained_s": 68.08,
+   "explanations": {
+    "done": 4,
+    "total": 4
+   }
+  },
+  {
+   "file": "S033__16.pdf",
+   "events": [
+    {
+     "t": 2.5,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 70.21,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 443.47,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 457.86,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 462.09,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 462.09,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 465.12,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 465.12,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-082",
+   "uploaded_s": 1.47,
+   "status": "done",
+   "finished_s": 462.09,
+   "reused_from": null,
+   "handoff_s": 462.09,
+   "judged_s": 465.12,
+   "explained_s": 465.12,
+   "explanations": {
+    "done": 3,
+    "total": 3
+   }
+  },
+  {
+   "file": "S034__17.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 100.73,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 615.72,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 640.26,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 642.88,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 642.88,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 648.11,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 648.11,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-088",
+   "uploaded_s": 1.77,
+   "status": "done",
+   "finished_s": 642.88,
+   "reused_from": null,
+   "handoff_s": 642.88,
+   "judged_s": 648.11,
+   "explained_s": 648.11,
+   "explanations": {
+    "done": 2,
+    "total": 2
+   }
+  },
+  {
+   "file": "S002__18.pdf",
+   "events": [
+    {
+     "t": 2.54,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 4.84,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 128.67,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 803.11,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 821.98,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 828.16,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-095",
+   "uploaded_s": 2.38,
+   "status": "done",
+   "finished_s": 828.16,
+   "reused_from": null,
+   "handoff_s": 828.16,
+   "judge_error": "HTTPError: HTTP Error 409: Conflict"
+  },
+  {
+   "file": "S015__19.pdf",
+   "events": [
+    {
+     "t": 2.5,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 124.04,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 703.85,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 718.3,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 720.41,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 720.41,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 725.39,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 725.39,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-091",
+   "uploaded_s": 2.24,
+   "status": "done",
+   "finished_s": 720.41,
+   "reused_from": null,
+   "handoff_s": 720.41,
+   "judged_s": 725.39,
+   "explained_s": 725.39,
+   "explanations": {
+    "done": 2,
+    "total": 2
+   }
+  },
+  {
+   "file": "S018__20.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 120.68,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 570.84,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 599.75,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 616.34,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 616.34,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 621.81,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 621.81,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-087",
+   "uploaded_s": 1.72,
+   "status": "done",
+   "finished_s": 616.34,
+   "reused_from": null,
+   "handoff_s": 616.34,
+   "judged_s": 621.81,
+   "explained_s": 621.81,
+   "explanations": {
+    "done": 6,
+    "total": 6
+   }
+  },
+  {
+   "file": "S024__21.pdf",
+   "events": [
+    {
+     "t": 0.61,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 2.65,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 30.38,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 59.16,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 80.05,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 92.9,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 92.9,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 97.61,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 99.65,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-072",
+   "uploaded_s": 0.57,
+   "status": "done",
+   "finished_s": 92.9,
+   "reused_from": null,
+   "handoff_s": 92.9,
+   "judged_s": 97.61,
+   "explained_s": 99.65,
+   "explanations": {
+    "done": 4,
+    "total": 4
+   }
+  },
+  {
+   "file": "S033__22.pdf",
+   "events": [
+    {
+     "t": 2.53,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 4.8,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 134.39,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 782.62,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 792.89,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 803.28,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 803.28,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 805.89,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 805.89,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-094",
+   "uploaded_s": 2.36,
+   "status": "done",
+   "finished_s": 803.28,
+   "reused_from": null,
+   "handoff_s": 803.28,
+   "judged_s": 805.89,
+   "explained_s": 805.89,
+   "explanations": {
+    "done": 3,
+    "total": 3
+   }
+  },
+  {
+   "file": "S034__23.pdf",
+   "events": [
+    {
+     "t": 2.52,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 125.12,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 719.42,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 740.16,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 742.27,
+     "status": "done",
+     "stage": "done"
+    },
+    {
+     "t": 742.27,
+     "status": "judge",
+     "stage": "to-judgment"
+    },
+    {
+     "t": 745.13,
+     "status": "judge",
+     "stage": "판정 완료"
+    },
+    {
+     "t": 745.13,
+     "status": "judge",
+     "stage": "설명 완료"
+    }
+   ],
+   "id": "U-20261108-092",
+   "uploaded_s": 2.29,
+   "status": "done",
+   "finished_s": 742.27,
+   "reused_from": null,
+   "handoff_s": 742.27,
+   "judged_s": 745.13,
+   "explained_s": 745.13,
+   "explanations": {
+    "done": 1,
+    "total": 1
+   }
+  }
+ ],
+ "judge": {
+  "documents": 20,
+  "errors": [
+   "HTTPError: HTTP Error 409: Conflict",
+   "HTTPError: HTTP Error 409: Conflict",
+   "HTTPError: HTTP Error 409: Conflict",
+   "HTTPError: HTTP Error 409: Conflict"
+  ],
+  "rules_s": [
+   4.8,
+   5.4,
+   4.4,
+   3.2,
+   5.4,
+   5.6,
+   6.8,
+   6.5,
+   2.8,
+   4.9,
+   5.8,
+   5.1,
+   7.1,
+   3.0,
+   5.2,
+   5.0,
+   5.5,
+   4.7,
+   2.6,
+   2.9
+  ],
+  "explain_s": [
+   0.0,
+   0.0,
+   0.0,
+   8.3,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   2.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   2.0,
+   0.0,
+   0.0
+  ],
+  "full_s": [
+   218.5,
+   447.8,
+   135.8,
+   558.3,
+   678.8,
+   575.3,
+   507.0,
+   194.8,
+   525.4,
+   412.6,
+   342.4,
+   787.6,
+   67.0,
+   463.6,
+   646.3,
+   723.1,
+   620.1,
+   99.1,
+   803.5,
+   742.8
+  ]
+ }
+}

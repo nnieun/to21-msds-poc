@@ -1,0 +1,95 @@
+# 글자추출(OCR) 구성을 compose.yaml 위에 얹는 덮어쓰기 파일.
+#
+#   GPU_UTIL=0.72 docker compose -f compose.yaml -f compose.ocr.yaml up -d --build
+#
+# 흐름(README의 배포 구성):
+#   app ──PDF 전송──▶ extract-api(글자추출 API, 8001) ──작업 등록──▶ PostgreSQL 작업 큐(msds_extraction)
+#                                                                        ▲ 가져가 처리
+#                                               ocr-worker (PaddleOCR + Docling, GPU, 한 번에 한 건)
+#   app ◀──결과 폴더(공유 볼륨)──────────────────────────────────────────┘
+#   app → 항 나누기 → model_gate → vllm
+#
+# GPU 한 장을 vllm과 ocr-worker가 나눠 쓴다. vLLM이 92%를 잡으면 OCR 자리가 약 6GB뿐이라 GPU_UTIL=0.72를 준다(README 구성).
+# vllm 설정이 바뀌므로 vllm 컨테이너가 다시 만들어진다(모델은 볼륨에 있어 다시 받지 않는다).
+# OCR 없이 되돌리려면 -f compose.ocr.yaml 없이 `GPU_UTIL=0.92 docker compose up -d` 로 다시 올린다.
+
+x-jobs-env: &jobs-env
+  MSDS_JOBS_DATABASE_URL: host=db port=5432 dbname=msds_service user=kdb password=${HTODB_PG_PASSWORD}
+
+x-ocr-volumes: &ocr-volumes
+  - ocr_jobs:/app/data/extraction_api   # 글자추출 API와 워커의 작업 파일
+  - pages:/app/data/pages               # 워커가 만든 쪽 이미지·글. app이 같은 곳을 읽는다(같은 파일시스템이 필요하다)
+
+services:
+  ocr-models:
+    # OCR 가중치를 한 번 받아 두는 1회용 작업. 끝나면 종료한다.
+    build:
+      context: ../..
+      dockerfile: deploy/compose/Dockerfile
+      target: ocr
+    image: to21-msds-ocr
+    restart: "no"
+    command: ["python", "/app/deploy/compose/ocr/download_models.py"]
+    environment:
+      TO21_OCR_MODELS_DIR: /models/paddlex/official_models
+      HF_HOME: /models/hf
+    volumes:
+      - ocr_models:/models
+
+  extract-api:
+    image: to21-msds-app
+    restart: unless-stopped
+    command: ["uvicorn", "--app-dir", "src", "msds.api.extraction_app:app", "--host", "0.0.0.0", "--port", "8001"]
+    environment: *jobs-env
+    volumes: *ocr-volumes
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/openapi.json', timeout=3)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  ocr-worker:
+    image: to21-msds-ocr
+    restart: unless-stopped
+    command: ["python", "-m", "msds.preprocess.jobs", "--schema", "msds_extraction", "--ocr-device", "gpu:0"]
+    environment:
+      <<: *jobs-env
+      TO21_OCR_MODELS_DIR: /models/paddlex/official_models
+      HF_HOME: /models/hf
+    volumes:
+      - ocr_models:/models
+      - ocr_jobs:/app/data/extraction_api
+      - pages:/app/data/pages
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    depends_on:
+      db:
+        condition: service_healthy
+      vllm:
+        condition: service_healthy        # vLLM이 GPU 메모리를 먼저 잡은 뒤에 OCR이 남은 자리를 쓴다
+      ocr-models:
+        condition: service_completed_successfully
+
+  app:
+    environment:
+      MSDS_PREPROCESS: ""                  # legacy가 아니면 version17(OCR+Docling)
+      MSDS_EXTRACTION_API_URL: http://extract-api:8001
+      MSDS_EXTRACTION_API_TIMEOUT: "1800"
+    volumes: *ocr-volumes
+    depends_on:
+      extract-api:
+        condition: service_healthy
+
+volumes:
+  ocr_models:
+  ocr_jobs:
+  pages:

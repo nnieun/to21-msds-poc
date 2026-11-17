@@ -1,0 +1,229 @@
+{
+ "label": "real_w6",
+ "start": "2026/11/08 09:03:27",
+ "docs": 6,
+ "done": 6,
+ "makespan_s": 148.2,
+ "per_doc_s": [
+  98.2,
+  100.2,
+  100.5,
+  104.1,
+  112.9,
+  147.7
+ ],
+ "median_doc_s": 104.1,
+ "reused": [],
+ "detail": [
+  {
+   "file": "S002.pdf",
+   "events": [
+    {
+     "t": 0.68,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 24.85,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 33.17,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 98.82,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-021",
+   "uploaded_s": 0.58,
+   "status": "done",
+   "finished_s": 98.82,
+   "reused_from": null
+  },
+  {
+   "file": "S015.pdf",
+   "events": [
+    {
+     "t": 0.68,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 13.97,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 24.35,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 26.71,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 131.65,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 148.15,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-019",
+   "uploaded_s": 0.48,
+   "status": "done",
+   "finished_s": 148.15,
+   "reused_from": null
+  },
+  {
+   "file": "S018.pdf",
+   "events": [
+    {
+     "t": 0.68,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 2.9,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 11.28,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 88.47,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 113.22,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-017",
+   "uploaded_s": 0.36,
+   "status": "done",
+   "finished_s": 113.22,
+   "reused_from": null
+  },
+  {
+   "file": "S024.pdf",
+   "events": [
+    {
+     "t": 0.68,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 11.33,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 20.19,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 92.4,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 100.62,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-018",
+   "uploaded_s": 0.42,
+   "status": "done",
+   "finished_s": 100.62,
+   "reused_from": null
+  },
+  {
+   "file": "S033.pdf",
+   "events": [
+    {
+     "t": 0.68,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 20.44,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 33.15,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 84.19,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 104.67,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-020",
+   "uploaded_s": 0.53,
+   "status": "done",
+   "finished_s": 104.67,
+   "reused_from": null
+  },
+  {
+   "file": "S034.pdf",
+   "events": [
+    {
+     "t": 0.65,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 2.86,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 14.14,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 98.71,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 100.82,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-016",
+   "uploaded_s": 0.31,
+   "status": "done",
+   "finished_s": 100.82,
+   "reused_from": null
+  }
+ ]
+}

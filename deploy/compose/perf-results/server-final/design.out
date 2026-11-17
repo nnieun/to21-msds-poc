@@ -1,0 +1,43 @@
+######## 설계 구성 실험 C: OCR 워커 6개, 전처리 6, 추출 1, 설명 1  10:21:15
+PDF 6건: S002.pdf S015.pdf S018.pdf S024.pdf S033.pdf S034.pdf 
+== vLLM 재시작(prefix 캐시 비우기) 10:21:15
+ Container to21-msds-vllm-1 Restarting 
+ Container to21-msds-vllm-1 Started 
+ Container to21-msds-vllm-1 Running 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-vllm-1 Healthy 
+== 문서 동시 수 1 로 app 재시작 10:22:46
+ Container to21-msds-extract-api-1 Running 
+ Container to21-msds-db-1 Running 
+ Container to21-msds-vllm-1 Running 
+ Container to21-msds-app-1 Recreate 
+ Container to21-msds-app-1 Recreated 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-migrate-1 Starting 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-migrate-1 Started 
+ Container to21-msds-extract-api-1 Waiting 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-migrate-1 Waiting 
+ Container to21-msds-extract-api-1 Healthy 
+ Container to21-msds-vllm-1 Healthy 
+ Container to21-msds-migrate-1 Exited 
+ Container to21-msds-app-1 Starting 
+ Container to21-msds-app-1 Started 
+ Container to21-msds-migrate-1 Waiting 
+ Container to21-msds-extract-api-1 Waiting 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-app-1 Waiting 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-migrate-1 Exited 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-extract-api-1 Healthy 
+ Container to21-msds-vllm-1 Healthy 
+ Container to21-msds-app-1 Healthy 
+   OCR 워커 6개, 앱 전처리 동시 6, 모델 추출 동시 1
+[dC_w1] 시작 2026/11/08 10:23:19 | 문서 6/6 완료 | 전체 198.9s | 문서별 [47.0, 79.5, 96.7, 136.7, 166.1, 191.7] | 중앙값 136.7s
+  전체 흐름(판정+설명 포함): 5/6건 | 업로드→설명 완료 [198.5, 141.9, 86.6, 99.2, 174.9] | 판정 로직 [4.7, 5.2, 5.1, 2.5, 4.7] | LLM 설명 [2.0, 0.0, 2.0, 0.0, 4.1] | 오류 ['HTTPError: HTTP Error 409: Conflict']
+끝 10:26:38
+== 설계 구성 실험 끝 10:26:38

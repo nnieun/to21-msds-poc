@@ -1,0 +1,102 @@
+== 재빌드 결과 10:09:00
+#15 unpacking to docker.io/library/to21-msds-ocr:fixed 29.3s done
+#15 DONE 198.7s
+재빌드 끝 10:07:01
+== 이미지 크기
+fixed 36.7GB
+latest 65.9GB
+== OCR 워커를 새 이미지로 교체 10:09:00
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-vllm-1 Healthy 
+== 검증: 손대지 않은 새 이미지에서 torch + paddle GPU
+torch 2.15.0+cu132 | GPU 사용 가능: True
+paddle GPU 수: 1
+검증 통과
+
+######## 실험 A: OCR 워커 1개 (OCR은 6건 동시, 모델 추출은 한 번에 한 문서) 10:09:34
+PDF 6건: S002.pdf S015.pdf S018.pdf S024.pdf S033.pdf S034.pdf 
+== vLLM 재시작(prefix 캐시 비우기) 10:09:34
+ Container to21-msds-vllm-1 Restarting 
+ Container to21-msds-vllm-1 Started 
+ Container to21-msds-vllm-1 Running 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-vllm-1 Healthy 
+== 문서 동시 수 1 로 app 재시작 10:11:06
+ Container to21-msds-db-1 Running 
+ Container to21-msds-extract-api-1 Running 
+ Container to21-msds-vllm-1 Running 
+ Container to21-msds-app-1 Recreate 
+ Container to21-msds-app-1 Recreated 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-migrate-1 Starting 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-migrate-1 Started 
+ Container to21-msds-extract-api-1 Waiting 
+ Container to21-msds-migrate-1 Waiting 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-extract-api-1 Healthy 
+ Container to21-msds-vllm-1 Healthy 
+ Container to21-msds-migrate-1 Exited 
+ Container to21-msds-app-1 Starting 
+ Container to21-msds-app-1 Started 
+ Container to21-msds-extract-api-1 Waiting 
+ Container to21-msds-migrate-1 Waiting 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-app-1 Waiting 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-migrate-1 Exited 
+ Container to21-msds-extract-api-1 Healthy 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-vllm-1 Healthy 
+ Container to21-msds-app-1 Healthy 
+   OCR 워커 1개, 앱 전처리 동시 6, 모델 추출 동시 1
+[dA_w1] 시작 2026/11/08 10:11:36 | 문서 6/6 완료 | 전체 197.8s | 문서별 [65.7, 88.1, 117.3, 146.0, 169.0, 197.1] | 중앙값 146.0s
+  전체 흐름(판정+설명 포함): 5/6건 | 업로드→설명 완료 [92.8, 70.6, 124.3, 171.4, 148.4] | 판정 로직 [4.7, 4.9, 5.0, 2.4, 2.4] | LLM 설명 [0.0, 0.0, 2.0, 0.0, 0.0] | 오류 ['HTTPError: HTTP Error 409: Conflict']
+끝 10:14:54
+
+######## 실험 B: OCR 워커 2개 (OCR은 6건 동시, 모델 추출은 한 번에 한 문서) 10:14:54
+PDF 6건: S002.pdf S015.pdf S018.pdf S024.pdf S033.pdf S034.pdf 
+== vLLM 재시작(prefix 캐시 비우기) 10:14:54
+ Container to21-msds-vllm-1 Restarting 
+ Container to21-msds-vllm-1 Started 
+ Container to21-msds-vllm-1 Running 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-vllm-1 Healthy 
+== 문서 동시 수 1 로 app 재시작 10:16:36
+ Container to21-msds-extract-api-1 Running 
+ Container to21-msds-db-1 Running 
+ Container to21-msds-vllm-1 Running 
+ Container to21-msds-app-1 Recreate 
+ Container to21-msds-app-1 Recreated 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-migrate-1 Starting 
+ Container to21-msds-migrate-1 Started 
+ Container to21-msds-extract-api-1 Waiting 
+ Container to21-msds-migrate-1 Waiting 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-vllm-1 Healthy 
+ Container to21-msds-extract-api-1 Healthy 
+ Container to21-msds-migrate-1 Exited 
+ Container to21-msds-app-1 Starting 
+ Container to21-msds-app-1 Started 
+ Container to21-msds-db-1 Waiting 
+ Container to21-msds-vllm-1 Waiting 
+ Container to21-msds-extract-api-1 Waiting 
+ Container to21-msds-migrate-1 Waiting 
+ Container to21-msds-app-1 Waiting 
+ Container to21-msds-db-1 Healthy 
+ Container to21-msds-extract-api-1 Healthy 
+ Container to21-msds-migrate-1 Exited 
+ Container to21-msds-vllm-1 Healthy 
+ Container to21-msds-app-1 Healthy 
+   OCR 워커 2개, 앱 전처리 동시 6, 모델 추출 동시 1
+[dB_w1] 시작 2026/11/08 10:17:07 | 문서 6/6 완료 | 전체 225.9s | 문서별 [51.1, 75.9, 113.5, 159.2, 182.1, 218.6] | 중앙값 159.2s
+  전체 흐름(판정+설명 포함): 4/6건 | 업로드→설명 완료 [56.1, 120.3, 184.7, 225.3] | 판정 로직 [5.0, 4.8, 2.5, 4.7] | LLM 설명 [0.0, 2.0, 0.0, 2.0] | 오류 ['HTTPError: HTTP Error 409: Conflict', 'HTTPError: HTTP Error 409: Conflict']
+끝 10:20:53
+
+== 전부 끝 10:20:53

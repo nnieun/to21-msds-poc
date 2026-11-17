@@ -1,0 +1,38 @@
+== base conc=1 prompts=32 repeat=1 08:40:13
+Benchmark duration (s):                  131.58    
+Output token throughput (tok/s):         170.24    
+Median TTFT (ms):                        318.40    
+P95 TTFT (ms):                           343.30    
+Median E2EL (ms):                        4062.92   
+P95 E2EL (ms):                           4278.09   
+== base conc=2 prompts=32 repeat=1 08:42:57
+Benchmark duration (s):                  77.86     
+Output token throughput (tok/s):         287.70    
+Median TTFT (ms):                        345.80    
+P95 TTFT (ms):                           359.36    
+Median E2EL (ms):                        4862.03   
+P95 E2EL (ms):                           4943.88   
+== base conc=4 prompts=32 repeat=1 08:44:39
+Benchmark duration (s):                  50.81     
+Output token throughput (tok/s):         440.84    
+Median TTFT (ms):                        382.33    
+P95 TTFT (ms):                           396.68    
+Median E2EL (ms):                        6364.42   
+P95 E2EL (ms):                           6446.13   
+== base conc=8 prompts=64 repeat=1 08:45:51
+Benchmark duration (s):                  71.68     
+Output token throughput (tok/s):         624.96    
+Median TTFT (ms):                        617.14    
+P95 TTFT (ms):                           1641.77   
+Median E2EL (ms):                        9067.43   
+P95 E2EL (ms):                           9683.23   
+== base conc=16 prompts=128 repeat=1 08:47:27
+Benchmark duration (s):                  144.39    
+Output token throughput (tok/s):         620.56    
+Median TTFT (ms):                        8804.49   
+P95 TTFT (ms):                           11040.56  
+Median E2EL (ms):                        17402.15  
+P95 E2EL (ms):                           19556.96  
+ to21-msds-vllm-1 Copying to21-msds-vllm-1:/tmp/perf/. to /home/ubuntu/perf/results/
+ to21-msds-vllm-1 Copied to21-msds-vllm-1:/tmp/perf/. to /home/ubuntu/perf/results/
+끝: /home/ubuntu/perf/results

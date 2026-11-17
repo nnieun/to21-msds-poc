@@ -1,0 +1,259 @@
+{
+ "label": "real_w1",
+ "start": "2026/11/08 08:58:39",
+ "docs": 6,
+ "done": 6,
+ "makespan_s": 181.4,
+ "per_doc_s": [
+  42.5,
+  57.3,
+  87.8,
+  126.7,
+  155.7,
+  180.8
+ ],
+ "median_doc_s": 126.7,
+ "reused": [],
+ "detail": [
+  {
+   "file": "S002.pdf",
+   "events": [
+    {
+     "t": 0.73,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 22.39,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 30.59,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 127.65,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 146.0,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 156.26,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-014",
+   "uploaded_s": 0.57,
+   "status": "done",
+   "finished_s": 156.26,
+   "reused_from": null
+  },
+  {
+   "file": "S015.pdf",
+   "events": [
+    {
+     "t": 0.73,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 11.69,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 22.35,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 57.4,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 73.73,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 88.22,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-012",
+   "uploaded_s": 0.45,
+   "status": "done",
+   "finished_s": 88.22,
+   "reused_from": null
+  },
+  {
+   "file": "S018.pdf",
+   "events": [
+    {
+     "t": 0.73,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 13.75,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 21.91,
+     "status": "running",
+     "stage": "sections"
+    },
+    {
+     "t": 24.14,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 88.17,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 116.84,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 127.24,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-013",
+   "uploaded_s": 0.51,
+   "status": "done",
+   "finished_s": 127.24,
+   "reused_from": null
+  },
+  {
+   "file": "S024.pdf",
+   "events": [
+    {
+     "t": 0.71,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 2.76,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 11.42,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 34.51,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 42.89,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-011",
+   "uploaded_s": 0.39,
+   "status": "done",
+   "finished_s": 42.89,
+   "reused_from": null
+  },
+  {
+   "file": "S033.pdf",
+   "events": [
+    {
+     "t": 0.7,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 2.75,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 13.74,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 41.21,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 51.4,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 57.64,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-010",
+   "uploaded_s": 0.33,
+   "status": "done",
+   "finished_s": 57.64,
+   "reused_from": null
+  },
+  {
+   "file": "S034.pdf",
+   "events": [
+    {
+     "t": 0.73,
+     "status": "queued",
+     "stage": null
+    },
+    {
+     "t": 22.27,
+     "status": "running",
+     "stage": "preprocess"
+    },
+    {
+     "t": 30.41,
+     "status": "queued",
+     "stage": "extract"
+    },
+    {
+     "t": 156.77,
+     "status": "running",
+     "stage": "extract"
+    },
+    {
+     "t": 175.24,
+     "status": "running",
+     "stage": "finalize"
+    },
+    {
+     "t": 181.43,
+     "status": "done",
+     "stage": "done"
+    }
+   ],
+   "id": "U-20261108-015",
+   "uploaded_s": 0.63,
+   "status": "done",
+   "finished_s": 181.43,
+   "reused_from": null
+  }
+ ]
+}
