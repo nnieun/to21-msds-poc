@@ -22,8 +22,16 @@ function withDoc(path: string, doc: string, extra?: Record<string, string>) {
   return `${path}?${q.toString()}`;
 }
 
+/** 로그인 뒤 돌아갈 곳. 이 사이트 안의 경로만 받는다 (//다른곳 이나 http: 로 내보내지 않게) */
+export function safeNext(next: string | null | undefined) {
+  if (!next || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return "/";
+  return next.startsWith("/login") ? "/" : next;
+}
+
 export const routes = {
   home: () => "/",
+  login: (next?: string) => (next && safeNext(next) !== "/" ? `/login/?${new URLSearchParams({ next })}` : "/login/"),
+  users: () => "/admin/users/",
   extract: (doc: string, page?: number) => withDoc("/extract/", doc, page ? { page: String(page) } : undefined),
   reviewMode: (doc: string) => withDoc("/review/mode/", doc),
   review: (doc: string, tab: ReviewTab = "hazard", extra?: Record<string, string>) => withDoc("/review/", doc, { tab, ...extra }),
