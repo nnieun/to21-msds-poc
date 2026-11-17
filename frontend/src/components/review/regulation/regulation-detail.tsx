@@ -164,7 +164,7 @@ export function ReviewControls({
 }) {
   const client = useQueryClient();
   const reviewer = useReviewer();
-  const [missing, setMissing] = useState<"comment" | "reviewer" | null>(null);
+  const [missing, setMissing] = useState<"comment" | "reviewer" | null>(null); // reviewer: 로그인 정보를 받기 전
   const review = view.reviews[finding.id];
 
   const mutation = useMutation({
@@ -276,7 +276,7 @@ export function ReviewControls({
       {lock && <p className="text-sm text-mut">{LOCK_TEXT[lock]}</p>}
       {missing === "reviewer" && (
         <p role="alert" className="text-sm text-red">
-          처리하려면 머리줄에서 검토자 이름을 먼저 정해 주세요.
+          로그인 정보를 아직 받지 못했습니다. 잠시 뒤 다시 눌러 주세요.
         </p>
       )}
       {error && (

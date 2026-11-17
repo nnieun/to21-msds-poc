@@ -209,7 +209,6 @@ function DatabaseCard({ docId, doc, ov, state }: { docId: string; doc: DocumentD
           {json.isPending ? "만드는 중…" : "JSON 내려받기"}
         </Button>
       </div>
-      {!reviewer && <p className="text-sm text-mut">저장하려면 머리줄에서 검토자 이름을 정해 주세요.</p>}
       {save.isSuccess && !save.isPending && (
         <p role="status" className="text-sm text-grn">
           {save.data.snapshot_no}번째 저장본을 남겼습니다.

@@ -8,7 +8,7 @@ import { useReviewer } from "@/lib/reviewer";
 import { routes } from "@/lib/routes";
 import { JudgmentNotice } from "./notice";
 
-/** 아직 판정하지 않은 문서. 검토자 이름이 있어야 판정으로 넘길 수 있다 */
+/** 아직 판정하지 않은 문서. 넘긴 사람은 로그인한 사람으로 남는다 */
 export function StartJudgment({ docId, paneTitle }: { docId: string; paneTitle: string }) {
   const client = useQueryClient();
   const reviewer = useReviewer();
@@ -27,7 +27,6 @@ export function StartJudgment({ docId, paneTitle }: { docId: string; paneTitle: 
           {start.isPending ? "넘기는 중…" : "판정으로 넘기기"}
         </Button>
       </div>
-      {!reviewer && <p className="text-sm text-mut">판정으로 넘기려면 머리줄에서 검토자 이름을 정해 주세요.</p>}
       {start.isError && (
         <p role="alert" className="text-sm break-words text-red">
           {isJudgmentApiMissing(start.error) ? "판정으로 넘기는 서버 기능이 아직 연결되지 않았습니다." : `넘기지 못했습니다: ${start.error.message}`}
