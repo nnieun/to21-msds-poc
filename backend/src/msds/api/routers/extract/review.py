@@ -1,6 +1,7 @@
 """2.2 추출값 확인(검수): 항별 칸·근거·검사 문제 보기, 칸 확인·수정·되돌림, 항 확인 완료.
 
 검수 기록은 저장소에 따로 남기고 추출 결과 파일은 고치지 않는다.
+검토자 이름은 로그인한 사용자에서 정한다. 본문의 reviewer 는 화면 전환 동안 받기만 하고 쓰지 않는다 (msds.auth.deps.acting_reviewer).
 """
 
 from typing import Literal
@@ -10,6 +11,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 from msds.api.routers.extract.deps import done_result
 from msds.api.routers.extract.storage import republish
+from msds.auth.deps import acting_reviewer
 from msds.service import review
 from msds.service.store import now_kst
 
@@ -21,7 +23,7 @@ class FieldReview(BaseModel):
     path: str = Field(min_length=1, max_length=300)
     action: Literal["confirm", "edit", "reset"]
     value: str | None = None
-    reviewer: str = Field(min_length=1, max_length=40, pattern=r"\S")
+    reviewer: str | None = Field(None, min_length=1, max_length=40, pattern=r"\S")  # 예전 화면 호환. 로그인하면 쓰지 않는다
 
     @model_validator(mode="after")
     def edit_needs_value(self):
@@ -34,7 +36,7 @@ class SectionReview(BaseModel):
     msds_index: int = Field(ge=0)
     section: int
     confirmed: bool
-    reviewer: str = Field(min_length=1, max_length=40, pattern=r"\S")
+    reviewer: str | None = Field(None, min_length=1, max_length=40, pattern=r"\S")  # 예전 화면 호환. 로그인하면 쓰지 않는다
 
     @field_validator("section")
     @classmethod
@@ -59,6 +61,7 @@ def review_view(request: Request, doc_id: str):
 def review_field(request: Request, doc_id: str, body: FieldReview):
     """칸 하나 확인·수정·되돌림. 원래 값, 근거, 검토자, 시각을 함께 남긴다. 추출 결과 파일은 고치지 않는다."""
     state, doc, chk = done_result(request, doc_id)
+    reviewer = acting_reviewer(request, body.reviewer)
     try:
         record = request.app.state.store.update_review(
             doc_id,
@@ -69,7 +72,7 @@ def review_field(request: Request, doc_id: str, body: FieldReview):
                 body.path,
                 body.action,
                 body.value,
-                body.reviewer.strip(),
+                reviewer,
                 now_kst(),
             ),
         )
@@ -87,6 +90,7 @@ def review_section(request: Request, doc_id: str, body: SectionReview):
     state, doc, chk = done_result(request, doc_id)
     if body.msds_index >= len(doc["msds"]):
         raise HTTPException(404, f"없는 MSDS: {body.msds_index}")
+    reviewer = acting_reviewer(request, body.reviewer)
     record = request.app.state.store.update_review(
         doc_id,
         lambda r: review.set_section(
@@ -94,7 +98,7 @@ def review_section(request: Request, doc_id: str, body: SectionReview):
             body.msds_index,
             body.section,
             body.confirmed,
-            body.reviewer.strip(),
+            reviewer,
             now_kst(),
         ),
     )

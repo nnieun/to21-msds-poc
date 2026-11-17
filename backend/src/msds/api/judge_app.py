@@ -1,7 +1,10 @@
 """B 화면 API: 판정·설명·검토·저장·리포트. 계약: docs/superpowers/specs/contracts/5-api.schema.json
 
 혼자 실행: cd backend && .venv/bin/uvicorn --app-dir src msds.api.judge_app:app --port 8011
-추출 API와 한 앱으로: app.include_router(router) + attach(app)
+추출 API와 한 앱으로: app.include_router(router, dependencies=[Depends(current_user)]) + attach(app)
+
+검토자 이름(review_event.reviewer, snapshot.saved_by)은 로그인한 사용자에서 정한다. 본문의 reviewer 는
+화면 전환 동안 받기만 한다. 인증 없이 router 만 붙인 시험 앱에서는 예전처럼 본문의 이름을 쓴다 (msds.auth.deps.acting_reviewer).
 """
 from __future__ import annotations
 
@@ -11,10 +14,13 @@ from contextlib import asynccontextmanager
 from typing import Annotated, Literal
 
 import psycopg
-from fastapi import APIRouter, FastAPI, HTTPException, Path, Query, Request, Response
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Path, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, model_validator
 
+from msds.api.routers import auth as auth_router
+from msds.auth.deps import acting_reviewer, current_user
+from msds.auth.setup import build_auth
 from msds.judge import explain as ex
 from msds.judge import reports
 from msds.judge.service import NOT_SENT, Conflict, InvalidAction, JudgeService, NotFound
@@ -43,7 +49,7 @@ class ReviewEventRequest(BaseModel):
     finding_id: Annotated[str, Field(pattern=FINDING_ID)]
     action: Literal["불일치 확정", "예외 승인", "확인", "의견", "되돌리기"]
     comment: Comment = None
-    reviewer: Reviewer
+    reviewer: Reviewer | None = None  # 예전 화면 호환. 로그인하면 쓰지 않는다
     seen_version: Annotated[int, Field(ge=1)]
     seen_event_id: Annotated[int | None, Field(ge=1)] = None
 
@@ -56,7 +62,7 @@ class ReviewEventRequest(BaseModel):
 
 class SaveRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    reviewer: Reviewer
+    reviewer: Reviewer | None = None  # 예전 화면 호환. 로그인하면 쓰지 않는다
     seen_version: Annotated[int, Field(ge=1)]
     note: Comment = None
 
@@ -145,12 +151,13 @@ def add_review(request: Request, job_id: JobId, body: ReviewEventRequest):
     comment = body.comment.strip() if body.comment else None
     # 칸을 보내지 않으면 충돌을 검사하지 않고, null 을 보내면 "기록이 없는 것을 봤음"으로 검사한다
     seen = body.seen_event_id if "seen_event_id" in body.model_fields_set else NOT_SENT
-    return _call(_svc(request).add_review_event, job_id, body.finding_id, body.action, comment, body.reviewer, body.seen_version, seen)
+    reviewer = acting_reviewer(request, body.reviewer)
+    return _call(_svc(request).add_review_event, job_id, body.finding_id, body.action, comment, reviewer, body.seen_version, seen)
 
 
 @router.post("/{job_id}/snapshots", status_code=201)
 def save(request: Request, job_id: JobId, body: SaveRequest):
-    return _call(_svc(request).save_snapshot, job_id, body.reviewer, body.seen_version, body.note)
+    return _call(_svc(request).save_snapshot, job_id, acting_reviewer(request, body.reviewer), body.seen_version, body.note)
 
 
 @router.post("/{job_id}/reports")
@@ -184,6 +191,8 @@ def detach(app: FastAPI) -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # 혼자 띄운 판정 앱(시험용)도 로그인한다. 사용자는 서비스 DB가 있으면 거기서, 없으면 메모리(MSDS_ADMIN_* 로 첫 관리자)
+    app.state.auth = build_auth(db_url=os.environ.get("MSDS_SERVICE_DATABASE_URL"))
     attach(app)
     yield
     detach(app)
@@ -193,7 +202,8 @@ async def lifespan(app: FastAPI):
 CORS_EXPOSE = ["Content-Disposition", "Accept-Ranges", "Content-Range", "Content-Length"]
 app = FastAPI(title="MSDS 판정·저장 API", lifespan=lifespan)
 # 단독으로 띄울 때 화면 개발 서버(next dev)가 다른 포트에서 부른다. 값은 extract_app과 같다
-app.add_middleware(CORSMiddleware, allow_methods=["*"], allow_headers=["*"], expose_headers=CORS_EXPOSE,
+app.add_middleware(CORSMiddleware, allow_methods=["*"], allow_headers=["*"], expose_headers=CORS_EXPOSE, allow_credentials=True,
                    allow_origins=[o.strip() for o in os.environ.get("MSDS_CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,"
                                                                      "http://localhost:3101,http://127.0.0.1:3101").split(",") if o.strip()])
-app.include_router(router)
+app.include_router(auth_router.router)
+app.include_router(router, dependencies=[Depends(current_user)])

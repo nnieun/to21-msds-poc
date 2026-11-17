@@ -14,7 +14,11 @@ GET  /api/documents/{id}/pages/{n}/image   쪽 이미지 (전처리 뒤)
 GET  /api/documents/{id}/pages/{n}/lines   줄 번호 붙은 쪽 글 (근거 줄 p2:L23과 같은 번호)
 GET  /api/documents/{id}/result            끝난 뒤 TO21 JSON과 사람이 볼 항. 끝나기 전에는 409
 POST /api/documents/{id}/retry             실패·멈춘 문서를 처음부터 다시
-POST /api/documents/{id}/to-judgment       추출값 확인을 마치고 판정으로 넘김 (본문 {reviewer}, 응답 {job_id, handoff_seq})
+POST /api/documents/{id}/to-judgment       추출값 확인을 마치고 판정으로 넘김 (응답 {job_id, handoff_seq})
+
+로그인: /api/health 와 /api/auth/* 말고는 모두 로그인해야 한다 (msds.auth, routers/auth.py).
+검수·판정 기록의 검토자 이름은 본문이 아니라 로그인한 사용자에서 정한다.
+PostgreSQL 모드에서는 MSDS_JWT_SECRET 이 있어야 켜지고, auth 표(scripts/auth_migrate.py)가 있어야 한다.
 
 이 파일은 앱 조립(저장소·작업자 수명, 오류 응답, CORS, 라우터 붙이기, 화면 정적 파일)만 한다.
 경로별 코드는 msds/api/routers/extract/ 아래 의미별 파일에 있다 (목록은 routers/extract/__init__.py).
@@ -26,13 +30,17 @@ import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from msds.api import judge_app
+from msds.api.routers import auth as auth_router
 from msds.api.routers.extract import ROUTERS
+from msds.api.routers.extract import health as health_router
+from msds.auth.deps import current_user
+from msds.auth.setup import build_auth
 from msds.common import paths
 from msds.service import pipeline
 from msds.service.handoff import HandoffNotReady
@@ -52,8 +60,11 @@ def create_app(
     worker=None,
     pages_dir: Path | None = None,
     static_dir: Path | None = FRONTEND_OUT,
+    users=None,
+    auth_settings=None,
 ) -> FastAPI:
-    """store·worker를 주지 않으면 켤 때 data/service와 실제 파이프라인 작업자를 만든다."""
+    """store·worker를 주지 않으면 켤 때 data/service와 실제 파이프라인 작업자를 만든다.
+    users·auth_settings를 주지 않으면 DB 모드는 auth 표와 MSDS_JWT_SECRET, 파일 모드는 메모리 사용자와 임시 키를 쓴다."""
     judge_embedded = os.environ.get(JUDGE_EMBED_ENV) == "1"
 
     @asynccontextmanager
@@ -70,6 +81,9 @@ def create_app(
         else:
             st = DocumentStore(pipeline.service_root(), taken_dirs=[paths.PAGES])
         app.state.store = st
+        # 사용자 저장소는 작업 저장소와 같은 규칙으로 고른다: 시험이 store 를 주입했으면 DB를 보지 않는다
+        app.state.auth = build_auth(users=users, settings=auth_settings,
+                                    db_url=db_url if store is None else None)
         if worker is not None:
             wk = worker
         elif db_url and store is None:
@@ -119,6 +133,7 @@ def create_app(
         CORSMiddleware,
         allow_methods=["*"],
         allow_headers=["*"],
+        allow_credentials=True,  # 화면 개발 서버(다른 포트)가 로그인 쿠키를 보낸다
         expose_headers=judge_app.CORS_EXPOSE,
         allow_origins=[
             o.strip()
@@ -127,10 +142,12 @@ def create_app(
         ],
     )
 
+    signed_in = [Depends(current_user)]
+    app.include_router(auth_router.router)  # 경로마다 권한이 다르다 (로그인은 공개, 사용자 관리는 관리자)
     for router in ROUTERS:
-        app.include_router(router)
+        app.include_router(router, dependencies=[] if router is health_router.router else signed_in)
     if judge_embedded:
-        app.include_router(judge_app.router)
+        app.include_router(judge_app.router, dependencies=signed_in)
 
     if static_dir and Path(static_dir).is_dir():
         app.mount("/", StaticFiles(directory=static_dir, html=True), name="frontend")

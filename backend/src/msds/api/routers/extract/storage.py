@@ -1,14 +1,16 @@
 """PostgreSQL 결과 보관: 끝난 결과를 검증해 저장, 저장된 결과 조회, 판정(B)용 전달 만들기.
 
 파일 저장소로 띄운 앱에서는 모두 409다.
+결과 저장(persist)과 수동 넘김(handoffs)은 운영자가 손으로 하는 일이라 관리자만 부른다.
 """
 
 import json
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from msds.api.routers.extract.deps import get_state, result_paths
+from msds.auth.deps import require_admin
 from msds.checks.final_validation import summarize_checks, validate_document
 from msds.service.handoff import HandoffNotReady, extraction_date, publish_handoff, republish_handoff
 from msds.service.results import ResultNotReady, ResultStore
@@ -24,7 +26,7 @@ def postgres_store(request: Request, what: str):
     return store
 
 
-@router.post("/api/documents/{doc_id}/results/persist")
+@router.post("/api/documents/{doc_id}/results/persist", dependencies=[Depends(require_admin)])
 def persist_completed_result(request: Request, doc_id: str):
     """Persist a previously completed, currently published PostgreSQL attempt."""
     state = get_state(request, doc_id)
@@ -108,19 +110,20 @@ def republish(request: Request, doc_id: str, reason: str) -> None:
 
 
 class ToJudgment(BaseModel):
-    reviewer: str = Field(min_length=1, max_length=40, pattern=r"\S")
+    # 예전 화면 호환. 넘김 기록에는 검토자가 들어가지 않고, 누가 넘겼는지는 로그인으로 안다
+    reviewer: str | None = Field(None, min_length=1, max_length=40, pattern=r"\S")
 
 
 @router.post("/api/documents/{doc_id}/to-judgment", status_code=201)
-def to_judgment(request: Request, doc_id: str, body: ToJudgment):
-    """추출값 확인을 마치고 판정으로 넘긴다 (넘김②, reason=values_reviewed)."""
+def to_judgment(request: Request, doc_id: str, body: ToJudgment | None = None):
+    """추출값 확인을 마치고 판정으로 넘긴다 (넘김②, reason=values_reviewed). 본문은 없어도 된다."""
     get_state(request, doc_id)
     store = postgres_store(request, "판정용 전달을 만들 수 있습니다")
     payload = _publish(store, doc_id, "values_reviewed")
     return {"job_id": doc_id, "handoff_seq": payload["handoff_seq"]}
 
 
-@router.post("/api/documents/{doc_id}/handoffs", status_code=201)
+@router.post("/api/documents/{doc_id}/handoffs", status_code=201, dependencies=[Depends(require_admin)])
 def create_handoff(request: Request, doc_id: str):
     """Publish the extraction snapshot using its actual extraction date."""
     get_state(request, doc_id)

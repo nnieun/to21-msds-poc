@@ -4,6 +4,7 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
+from auth_user import sign_in
 from msds.api import extract_app
 from msds.api.routers.extract import regenerated as regen_router
 from msds.extract.inputs import EXTRACT_SECTIONS
@@ -214,7 +215,7 @@ class W:
 @pytest.fixture
 def api(tmp_path):
     store = DocumentStore(tmp_path / "service")
-    with TestClient(extract_app.create_app(store=store, worker=W(), pages_dir=tmp_path / "pages")) as client:
+    with TestClient(sign_in(extract_app.create_app(store=store, worker=W(), pages_dir=tmp_path / "pages"))) as client:
         doc = client.post("/api/documents", params={"filename": "a.pdf"}, content=b"%PDF-1.7").json()["id"]
         out, checks = pipeline.result_paths(store, doc)
         out.parent.mkdir(parents=True)

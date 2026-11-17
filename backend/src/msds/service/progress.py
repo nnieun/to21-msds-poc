@@ -19,10 +19,10 @@ _SECTION_STATUSES = ("queued", "running", "done", "failed")
 
 
 def new_state(doc_id: str, filename: str, sha256: str, size: int, as_of: str | None, model_tag: str,
-              now: str, duplicate_of: list[str] | None = None) -> dict:
+              now: str, duplicate_of: list[str] | None = None, created_by: str | None = None) -> dict:
     return {
         "id": doc_id, "filename": filename, "sha256": sha256, "size": size, "as_of": as_of,
-        "model_tag": model_tag, "duplicate_of": list(duplicate_of or []),
+        "model_tag": model_tag, "duplicate_of": list(duplicate_of or []), "created_by": created_by,
         "created_at": now, "updated_at": now,
         **_run_fields(),
     }
@@ -132,6 +132,7 @@ def summary_view(state: dict) -> dict:
     return {**{k: state[k] for k in keep}, "stage_index": stage_index(state), "stage_total": len(STAGES),
             "counts": counts(state), "can_retry": can_retry(state),
             "reused_from": state.get("reused_from"),
+            "created_by": state.get("created_by"),  # 올린 사람의 로그인 아이디. 로그인 도입 전 문서는 None
             "validation": (state.get("summary") or {}).get("validation")}
 
 
