@@ -26,6 +26,8 @@ function loadPdf(docId: string): Promise<PDFDocumentProxy> {
       pdfjs.GlobalWorkerOptions.workerSrc = `${ASSETS}/pdf.worker.min.mjs`;
       return pdfjs.getDocument({
         url: pdfUrl(docId),
+        // 로그인 쿠키를 실어 보낸다 (next dev 처럼 API 가 다른 출처일 때 필요하다)
+        withCredentials: true,
         cMapUrl: `${ASSETS}/cmaps/`,
         cMapPacked: true,
         standardFontDataUrl: `${ASSETS}/standard_fonts/`,

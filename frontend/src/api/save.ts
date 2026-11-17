@@ -5,7 +5,7 @@
  */
 import { queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
-import { ApiRequestError, apiUrl, toRequestError } from "./client";
+import { ApiRequestError, apiFetch, toRequestError } from "./client";
 import { call, judgmentKeys } from "./judgment";
 
 /** 3-consistency msds_result.summary: 판정별 건수 */
@@ -112,7 +112,7 @@ export async function fetchReport(
     const mock = await import("./judgment-mock");
     if (mock.mockActive()) throw new ApiRequestError(404, "unknown", "Not Found");
   }
-  const res = await fetch(apiUrl(`${job(id)}/reports`), {
+  const res = await apiFetch(`${job(id)}/reports`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ format, snapshot_no: snapshotNo, include }),

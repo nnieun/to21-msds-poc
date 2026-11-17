@@ -2,11 +2,11 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { routes } from "@/lib/routes";
-import { ReviewerBadge } from "./reviewer-badge";
+import { UserMenu } from "./user-menu";
 
 /**
  * 모든 화면 맨 위 줄 (templates 의 .hd): 왼쪽에 제품 이름과 (문서 화면이면) 문서 이름,
- * 오른쪽에 검토자. width 는 아래 본문과 같은 최대 너비를 받는다.
+ * 오른쪽에 로그인한 사람과 로그아웃. width 는 아래 본문과 같은 최대 너비를 받는다.
  */
 export function AppHeader({
   doc,
@@ -18,7 +18,7 @@ export function AppHeader({
   doc?: string;
   /** 문서 이름 옆 설명. 없으면 아무것도 그리지 않는다 */
   note?: string;
-  /** 제목과 검토자 사이(가운데)에 그릴 내용. 문서 화면의 단계 알약 */
+  /** 제목과 로그인한 사람 사이(가운데)에 그릴 내용. 문서 화면의 단계 알약 */
   center?: ReactNode;
   /** 문서 이름 바로 뒤에 그릴 알약. 문서 화면의 기준일 */
   badge?: ReactNode;
@@ -53,10 +53,10 @@ export function AppHeader({
         {center && <div className="shrink-0">{center}</div>}
         {center ? (
           <div className="lg:justify-self-end">
-            <ReviewerBadge />
+            <UserMenu />
           </div>
         ) : (
-          <ReviewerBadge />
+          <UserMenu />
         )}
       </div>
     </header>

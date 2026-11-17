@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useController, useForm, useWatch } from "react-hook-form";
+import { useController, useForm } from "react-hook-form";
 import { z } from "zod";
 import { ApiRequestError } from "@/api/client";
 import { createDocument, documentKeys } from "@/api/documents";
@@ -23,7 +23,7 @@ import {
   type DropzoneStatus,
 } from "@/components/ui";
 import { formatBytes, todayKst } from "@/lib/format";
-import { setReviewer, useReviewer } from "@/lib/reviewer";
+import { useReviewer } from "@/lib/reviewer";
 import { routes } from "@/lib/routes";
 
 /*
@@ -44,12 +44,6 @@ const uploadFormSchema = z.object({
     .refine(async (f) => (await f.slice(0, PDF_MAGIC.length).text()) === PDF_MAGIC, "PDF 파일이 아닙니다. 내용이 PDF 인 파일을 골라 주세요."),
   /** 비우면 서버가 기준일 없이 처리한다 */
   as_of: z.union([z.iso.date({ message: "기준일은 YYYY-MM-DD 형식으로 입력해 주세요." }), z.literal("")]),
-  /** 서버로 보내지 않는다. 수정 기록과 결과 PDF에 남길 이름이라 비우고는 시작하지 않는다 */
-  reviewer: z
-    .string()
-    .trim()
-    .min(1, "검토자 이름을 입력해 주세요.")
-    .max(40, "검토자 이름은 40자 이내로 입력해 주세요."),
 });
 
 type UploadInput = z.input<typeof uploadFormSchema>;
@@ -71,7 +65,7 @@ export function UploadForm() {
   } = useForm<UploadInput, unknown, UploadValues>({
     resolver: zodResolver(uploadFormSchema),
     mode: "onChange",
-    defaultValues: { file: undefined, as_of: "", reviewer: "" },
+    defaultValues: { file: undefined, as_of: "" },
   });
   const { field: fileField } = useController({ control, name: "file" });
   const file = fileField.value instanceof File ? fileField.value : null;
@@ -81,15 +75,8 @@ export function UploadForm() {
     if (!getValues("as_of")) setValue("as_of", todayKst(), { shouldValidate: true });
   }, [getValues, setValue]);
 
-  // 검토자 이름은 브라우저에 저장된 값을 따른다. 머리줄에서 바꿔도 이 칸이 같이 바뀐다.
-  const savedReviewer = useReviewer();
-  useEffect(() => {
-    if (getValues("reviewer") !== savedReviewer) {
-      setValue("reviewer", savedReviewer, { shouldValidate: savedReviewer !== "" });
-    }
-  }, [savedReviewer, getValues, setValue]);
-  const reviewerField = register("reviewer", { onChange: (e) => setReviewer(e.target.value) });
-  const reviewerValue = useWatch({ control, name: "reviewer" });
+  // 기록에 남는 이름은 로그인한 사람이다 (서버가 정한다). 여기서는 보여 주기만 한다
+  const reviewer = useReviewer();
 
   const upload = useMutation({
     mutationFn: ({ file, as_of }: UploadValues) =>
@@ -114,7 +101,7 @@ export function UploadForm() {
   const busy = upload.isPending;
   const canStart = !!file && isValid && !isValidating && !busy;
 
-  // 상자의 상태: 파일 칸만 본다 (검토자 이름을 치는 동안 상자가 깜빡이지 않도록)
+  // 상자의 상태: 파일 칸만 본다 (기준일을 고치는 동안 상자가 깜빡이지 않도록)
   const fileStatus: DropzoneStatus = errors.file
     ? "invalid"
     : file && validatingFields.file
@@ -122,7 +109,6 @@ export function UploadForm() {
       : file
         ? "ready"
         : "idle";
-  const needsReviewer = fileStatus === "ready" && !reviewerValue.trim();
 
   const onFiles = (files: File[]) => {
     upload.reset();
@@ -163,21 +149,11 @@ export function UploadForm() {
               {...register("as_of")}
             />
           </Field>
-          <Field
-            id="reviewer"
-            label="검토자 이름"
-            hint="수정 기록과 결과 PDF에 이 이름이 남습니다. 이 브라우저에만 저장됩니다."
-            error={errors.reviewer?.message}
-          >
-            <Input
-              id="reviewer"
-              autoComplete="name"
-              disabled={busy}
-              aria-invalid={!!errors.reviewer}
-              aria-describedby={errors.reviewer ? "reviewer-error" : "reviewer-hint"}
-              {...reviewerField}
-            />
-          </Field>
+          <div>
+            <p className="mb-1 text-sm font-bold text-mut">검토자</p>
+            <p className="min-h-10 content-center font-medium">{reviewer}</p>
+            <p className="mt-1 text-sm text-mut">로그인한 사람입니다. 수정 기록과 결과 PDF에 이 이름이 남습니다.</p>
+          </div>
         </Card>
       </Row>
 
@@ -190,8 +166,6 @@ export function UploadForm() {
             </p>
           ) : busy ? (
             <p className="text-mut">파일을 올리고 있습니다. 끝나면 진행 화면으로 넘어갑니다.</p>
-          ) : needsReviewer ? (
-            <p className="text-amb-text">검토자 이름을 적으면 시작할 수 있습니다.</p>
           ) : fileStatus === "ready" ? (
             <p className="text-grn">준비됐습니다. 추출 시작을 누르면 올리고 진행 화면으로 넘어갑니다.</p>
           ) : fileStatus === "invalid" ? (

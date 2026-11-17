@@ -1,46 +1,18 @@
 "use client";
 
 /*
- * 검토자 이름. 서버로 보내지 않고 이 브라우저(localStorage)에만 둔다 (명세 8. 인증·사용자 없음).
- * 목록의 검증 조건과 머리줄이 같은 값을 보도록 한 곳에서 읽고 쓴다.
- * 저장소를 쓸 수 없는 환경(사생활 보호 창 등)에서는 이 탭 안에서만 기억한다.
+ * 검토자 = 로그인한 사람. 기록에 남는 이름은 서버가 로그인 정보로 정한다 (본문의 reviewer 는 서버가 쓰지 않는다).
+ * 화면은 표시와 옛 대역(judgment-mock)을 위해 같은 이름을 보낸다.
+ * AuthGate 안에서는 늘 로그인한 뒤라 빈 값이 아니다. 로그인 정보를 받기 전에만 빈 값이다.
  */
-import { useSyncExternalStore } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { meQuery, type User } from "@/api/auth";
 
-const KEY = "msds.reviewer";
-const EVENT = "msds:reviewer";
-
-let memory = "";
-
-function read(): string {
-  try {
-    return window.localStorage.getItem(KEY) ?? memory;
-  } catch {
-    return memory;
-  }
+export function useCurrentUser(): User | undefined {
+  return useQuery(meQuery()).data;
 }
 
-export function setReviewer(name: string) {
-  memory = name;
-  try {
-    window.localStorage.setItem(KEY, name);
-  } catch {
-    // 저장소를 못 쓰면 memory 에만 남긴다
-  }
-  window.dispatchEvent(new Event(EVENT));
-}
-
-function subscribe(onChange: () => void) {
-  // 같은 탭은 EVENT, 다른 탭은 storage 로 알린다
-  window.addEventListener(EVENT, onChange);
-  window.addEventListener("storage", onChange);
-  return () => {
-    window.removeEventListener(EVENT, onChange);
-    window.removeEventListener("storage", onChange);
-  };
-}
-
-/** 지금 검토자 이름. 정적 빌드·첫 그림에서는 빈 값이고, 브라우저에서 저장된 값으로 바뀐다. */
+/** 지금 검토자 이름 (로그인한 사람의 표시 이름) */
 export function useReviewer() {
-  return useSyncExternalStore(subscribe, read, () => "");
+  return useCurrentUser()?.display_name ?? "";
 }

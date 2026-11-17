@@ -22,6 +22,8 @@
  *   MOCK_NO_JUDGE=1 이면 /api/judgments/* 가 404 Not Found (판정 서비스 미연결), MOCK_SUMMARY_FAIL=1 이면 판정 요약만 500
  * 목록 시험 문서 (docs.ts): U-20261103-006 판정 실패 · 005 추출 중 · 004 대기 · 003 실패 · 002 검수 중(판정 없음) · 001 완료(저장본, 골드)
  *   GET  /api/documents, GET /api/documents/{id} queue_fields·document_extras 가 붙은 문서 목록·상세
+ * 로그인 (실제 서버의 /api/auth 흉내): 아무 아이디·비밀번호로 들어온다. 토큰은 만들지 않고 쿠키 하나로 로그인 여부만 본다
+ *   POST /api/auth/login · refresh · logout, GET /api/auth/me   (MOCK_NO_AUTH=1 이면 로그인 없이 늘 가상 관리자)
  *
  * 응답 데이터와 상태 규칙은 이 폴더의 core.ts(서버가 하는 일을 흉내 낸 핵심 함수), 문서는 docs.ts 에 있다.
  * 시작할 때 TypeScript 를 .gen/ 에 옮겨 읽는다. 요청 본문과 응답은 이 폴더의 contract/ (계약 그대로의 strict zod. 화면 src 의 느슨한 zod 와 따로 둔다)로 확인하고,
@@ -89,8 +91,9 @@ function cors(req, res) {
   if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Credentials", "true"); // 화면은 로그인 쿠키를 실어 보낸다
   }
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type,Accept");
   // 실제 서버는 Content-Disposition 을 노출하지 않는다 (다른 출처의 화면은 파일 이름 헤더를 읽지 못한다)
 }
@@ -126,6 +129,46 @@ async function readJson(req) {
   } catch {
     return { ok: false };
   }
+}
+
+/* 가상 로그인. 실제 서버처럼 HttpOnly 쿠키를 주지만 값은 서명 없는 이름이다 (개발용) */
+const NO_AUTH = process.env.MOCK_NO_AUTH === "1";
+const MOCK_COOKIE = "msds_mock_user";
+const mockUser = (username) => ({ id: 1, username, display_name: "가상 검토자", role: "admin", is_active: true });
+const cookieUser = (req) => {
+  if (NO_AUTH) return "dev";
+  const m = /(?:^|;\s*)msds_mock_user=([a-z0-9_.-]+)/.exec(req.headers.cookie ?? "");
+  return m ? m[1] : null;
+};
+const setUserCookie = (res, username) =>
+  res.setHeader("Set-Cookie", `${MOCK_COOKIE}=${username ?? ""}; Path=/; HttpOnly; SameSite=Strict${username ? "" : "; Max-Age=0"}`);
+
+async function authRoute(req, res, p) {
+  if (req.method === "POST" && p === "/api/auth/login") {
+    const body = await readJson(req);
+    const username = String(body.ok && body.value?.username ? body.value.username : "")
+      .trim()
+      .toLowerCase();
+    if (!/^[a-z0-9_.-]{3,40}$/.test(username)) return fail(res, 401, "아이디 또는 비밀번호가 맞지 않습니다");
+    setUserCookie(res, username);
+    return send(res, 200, { user: mockUser(username), access_token: "mock", token_type: "bearer", expires_in: 1800 });
+  }
+  if (req.method === "POST" && p === "/api/auth/refresh") {
+    const user = cookieUser(req);
+    if (!user) return fail(res, 401, "다시 로그인해 주세요");
+    return send(res, 200, { user: mockUser(user), access_token: "mock", token_type: "bearer", expires_in: 1800 });
+  }
+  if (req.method === "POST" && p === "/api/auth/logout") {
+    setUserCookie(res, null);
+    res.writeHead(204);
+    res.end();
+    return 204;
+  }
+  if (req.method === "GET" && p === "/api/auth/me") {
+    const user = cookieUser(req);
+    return user ? send(res, 200, mockUser(user)) : fail(res, 401, "로그인이 필요합니다");
+  }
+  return fail(res, 404, "Not Found");
 }
 
 /** 핵심 함수가 던지는 FakeHttpError 를 응답으로. 409 본문은 conflict_response 로 확인한다 */
@@ -212,6 +255,8 @@ const server = http.createServer(async (req, res) => {
       status = 204;
     } else if (req.method === "GET" && p === "/api/health") {
       status = send(res, 200, { ok: true, mock: "judgment" });
+    } else if (p.startsWith("/api/auth/")) {
+      status = await authRoute(req, res, p);
     } else if (NO_JUDGE && p.startsWith("/api/judgments")) {
       status = fail(res, 404, "Not Found");
     } else if (req.method === "GET" && p === "/api/judgments/summary" && SUMMARY_FAIL) {
